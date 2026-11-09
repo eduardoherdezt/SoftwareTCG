@@ -1,0 +1,51 @@
+{
+  "name": "moltcg",
+  "productName": "Mole TCG",
+  "version": "1.0.0",
+  "description": "Trading card shop point of sale and inventory manager",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "pack:win": "electron-builder --dir --win",
+    "dist:win": "electron-builder --win nsis portable"
+  },
+  "devDependencies": {
+    "electron": "^44.5.1",
+    "electron-builder": "^26.0.12"
+  },
+  "build": {
+    "appId": "com.moletcg.desktop",
+    "productName": "Mole TCG",
+    "asar": true,
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "main.js",
+      "index.html",
+      "package.json"
+    ],
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        },
+        {
+          "target": "portable",
+          "arch": [
+            "x64"
+          ]
+        }
+      ]
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true
+    }
+  }
+}

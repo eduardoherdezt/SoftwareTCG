@@ -1,0 +1,936 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#f4f5f1">
+<title>Mole TCG | Point of Sale</title>
+<style>
+:root{font-family:"Aptos","Segoe UI",sans-serif;color:#202b28;background:#f4f5f1;font-synthesis:none;text-rendering:optimizeLegibility;--ink:#202b28;--muted:#77817b;--line:#e4e8e1;--paper:#fff;--green:#1e493a;--green-soft:#e7eee8;--red:#bd5b47;--gold:#d8ab58;--shadow:0 12px 34px #22342a0b}
+*{box-sizing:border-box}body{margin:0;min-width:320px;min-height:100vh}button,input,select{font:inherit}button{cursor:pointer}.app{min-height:100vh;display:grid;grid-template-columns:224px minmax(0,1fr)}
+.sidebar{background:#203a32;color:#f4f3e9;padding:26px 16px 18px;display:flex;flex-direction:column;position:sticky;top:0;height:100vh}.brand{display:flex;align-items:center;gap:11px;padding:0 11px 34px}.brand-mark{width:35px;height:35px;border-radius:10px;background:#d8ab58;color:#203a32;display:grid;place-items:center;font-family:Georgia,serif;font-size:23px;font-weight:700}.brand-name{font-family:Georgia,serif;font-weight:700;font-size:20px;letter-spacing:.1px}.brand-sub{font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:#a8b9ad;margin-top:3px}.nav-label{font-size:10px;text-transform:uppercase;letter-spacing:1.2px;color:#91a69a;padding:0 12px;margin:4px 0 10px}.nav{display:grid;gap:5px}.nav button{background:transparent;color:#cad5cc;border:0;border-radius:7px;text-align:left;padding:11px 12px;display:flex;align-items:center;gap:12px;font-size:13px}.nav button:hover{background:#ffffff12}.nav button.active{background:#f3f3e9;color:#203a32;font-weight:650}.nav-icon{font-size:17px;width:19px;text-align:center}.sidebar-bottom{margin-top:auto}.store-card{margin:0 5px;padding:14px;border:1px solid #ffffff24;border-radius:7px;background:#ffffff08}.store-head{display:flex;align-items:center;gap:9px;font-size:12px;font-weight:600}.online-dot{height:7px;width:7px;border-radius:50%;background:#87c69e}.store-meta{font-size:11px;color:#a8b9ad;margin:7px 0 0 17px}.user{border-top:1px solid #ffffff20;margin-top:18px;padding:16px 9px 0;display:flex;align-items:center;gap:10px}.avatar{height:33px;width:33px;border-radius:50%;background:#dfc391;color:#26392e;display:grid;place-items:center;font-family:Georgia,serif;font-weight:bold}.user-name{font-size:12px;font-weight:600}.user-role{font-size:10px;color:#a8b9ad;margin-top:3px}
+main{padding:30px 34px 38px;min-width:0;max-width:1700px;width:100%;margin:0 auto}.topbar{height:42px;display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:23px}.eyebrow{font-size:10px;text-transform:uppercase;letter-spacing:1.5px;color:#78837b;margin-bottom:5px}.page-title{font-family:Georgia,"Times New Roman",serif;font-size:27px;line-height:1.1;font-weight:500;margin:0;color:#25352e}.date{font-size:12px;color:var(--muted);padding-top:5px}.workspace{display:none}.workspace.active{display:block;animation:appear .22s ease-out}@keyframes appear{from{opacity:.6;transform:translateY(3px)}to{opacity:1;transform:none}}
+.pos-layout{display:grid;grid-template-columns:minmax(0,1fr) 344px;gap:22px;align-items:start}.catalog{min-width:0}.summary-strip{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:22px}.metric{padding:14px 16px;background:#fff;border:1px solid var(--line);border-radius:6px;display:flex;justify-content:space-between;align-items:center}.metric-label{font-size:10px;color:#78837b;text-transform:uppercase;letter-spacing:.7px}.metric-value{font-family:Georgia,serif;font-size:21px;color:#293b32;margin-top:4px}.metric-icon{height:32px;width:32px;border-radius:50%;display:grid;place-items:center;background:#eef2eb;color:#315747;font-size:15px}.catalog-heading{display:flex;align-items:flex-end;justify-content:space-between;margin:0 0 12px}.section-title{font-family:Georgia,serif;font-size:19px;font-weight:500;margin:0;color:#293b32}.section-note{font-size:11px;color:var(--muted);margin-top:4px}.catalog-tools{display:flex;align-items:center;gap:8px}.search-wrap{position:relative}.search-icon{position:absolute;left:11px;top:9px;color:#87918a;font-size:15px}.search{height:35px;width:194px;border:1px solid #dfe4dd;border-radius:5px;padding:0 10px 0 32px;background:#fff;font-size:12px;outline:none}.search:focus,input:focus,select:focus{border-color:#628270;box-shadow:0 0 0 3px #6282701c}.filter-row{display:flex;gap:5px;border-bottom:1px solid var(--line);margin-bottom:15px;overflow-x:auto}.filter{border:0;background:none;color:#748078;padding:9px 12px 10px;font-size:11px;white-space:nowrap;border-bottom:2px solid transparent}.filter.active{color:#264a3b;border-bottom-color:#3d7056;font-weight:650}.product-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.product{background:#fff;border:1px solid var(--line);border-radius:6px;overflow:hidden;min-width:0;transition:transform .16s,border-color .16s,box-shadow .16s}.product:hover{transform:translateY(-2px);border-color:#c5d0c7;box-shadow:var(--shadow)}.product-art{height:117px;position:relative;overflow:hidden;display:flex;align-items:flex-end;padding:12px;color:#fff;background:#304c45}.product-art:before{content:"";position:absolute;width:130px;height:130px;border:1px solid #ffffff5b;border-radius:50%;top:-51px;right:-18px;box-shadow:0 0 0 12px #ffffff0c,0 0 0 26px #ffffff0c}.product-art:after{content:"";position:absolute;width:72px;height:96px;right:22px;top:15px;transform:rotate(12deg);border:1px solid #ffffff55;background:linear-gradient(145deg,#ffffff3b,#ffffff08);border-radius:4px;box-shadow:8px 8px 0 -2px #172a234a}.art-pokemon{background:linear-gradient(135deg,#b4523d,#e4a64b)}.art-magic{background:linear-gradient(135deg,#394b77,#9a6a74)}.art-onepiece{background:linear-gradient(135deg,#39746c,#77a981)}.art-yugioh{background:linear-gradient(135deg,#443d68,#a35b72)}.art-lorcana{background:linear-gradient(135deg,#37606f,#84a69b)}.art-accessory{background:linear-gradient(135deg,#72553c,#c0935e)}.art-single{background:linear-gradient(135deg,#475d4c,#84a878)}.art-title{position:relative;z-index:1;font-family:Georgia,serif;font-size:16px;line-height:1.1;text-shadow:0 1px 4px #0005}.art-label{position:absolute;z-index:2;top:10px;left:10px;border-radius:3px;background:#14282088;padding:4px 6px;font-size:8px;text-transform:uppercase;letter-spacing:1px}.product-content{padding:11px 12px 12px}.product-name{font-size:12px;font-weight:650;line-height:1.35;min-height:33px}.product-meta{display:flex;justify-content:space-between;align-items:center;margin-top:7px;font-size:10px;color:#7b867e}.stock-low{color:#b4513e}.product-footer{display:flex;align-items:center;justify-content:space-between;margin-top:11px;padding-top:9px;border-top:1px solid #edf0eb}.price{font-family:Georgia,serif;font-size:17px;color:#263d32}.add-button{height:28px;min-width:30px;padding:0 9px;border:0;border-radius:4px;background:#e8efe8;color:#28513d;font-size:17px;line-height:1}.add-button:hover{background:#d4e3d6}.add-button:disabled{opacity:.35;cursor:not-allowed}
+.cart{position:sticky;top:24px;background:#fff;border:1px solid var(--line);border-radius:6px;overflow:hidden;box-shadow:var(--shadow)}.cart-head{display:flex;justify-content:space-between;align-items:center;padding:17px 17px 15px;border-bottom:1px solid var(--line)}.cart-title{font-family:Georgia,serif;font-size:18px;color:#293b32}.cart-count{font-size:10px;color:#748078;background:#eef2eb;padding:5px 8px;border-radius:12px}.cart-items{min-height:178px;max-height:340px;overflow:auto;padding:4px 16px}.empty-cart{height:172px;display:flex;align-items:center;justify-content:center;text-align:center;color:#89938c;font-size:12px;line-height:1.7}.empty-symbol{font-family:Georgia,serif;font-size:29px;color:#b3beb5;display:block;margin-bottom:4px}.cart-item{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;padding:13px 0;border-bottom:1px solid #edf0eb}.cart-item-name{font-size:11px;font-weight:600;line-height:1.35}.cart-item-unit{font-size:10px;color:#818b84;margin-top:4px}.cart-item-price{font-size:11px;font-weight:650;text-align:right}.qty-control{display:flex;align-items:center;gap:9px;margin-top:8px}.qty-control button{width:20px;height:20px;border:1px solid #dce3dc;background:#fff;border-radius:4px;color:#355a45;line-height:1}.qty-control span{font-size:10px;min-width:9px;text-align:center}.remove-item{border:0;background:none;color:#a0a8a1;font-size:13px;padding:0 0 0 5px}.cart-bottom{padding:15px 17px 17px;border-top:1px solid var(--line)}.totals{display:grid;gap:8px}.total-row{display:flex;justify-content:space-between;color:#77817a;font-size:11px}.total-row.grand{font-size:14px;color:#293b32;font-weight:650;padding-top:10px;margin-top:2px;border-top:1px solid var(--line)}.checkout-button,.primary-button{width:100%;height:42px;margin-top:15px;border:0;border-radius:5px;background:#28533f;color:#fff;font-size:12px;font-weight:650;letter-spacing:.1px}.checkout-button:hover,.primary-button:hover{background:#1c4231}.checkout-button:disabled{opacity:.45;cursor:not-allowed}.tax-note{text-align:center;color:#97a098;font-size:9px;margin-top:9px}.clear-cart{border:0;background:transparent;color:#a05444;font-size:10px;padding:0}
+.page-toolbar{display:flex;justify-content:space-between;align-items:center;margin:5px 0 17px}.toolbar-actions{display:flex;gap:8px}.secondary-button{background:#fff;border:1px solid #dfe4dd;color:#33453b;border-radius:5px;height:35px;padding:0 12px;font-size:11px}.secondary-button:hover{background:#f8faf7}.data-panel{background:#fff;border:1px solid var(--line);border-radius:6px;overflow:hidden}.table-scroll{overflow-x:auto}table{border-collapse:collapse;width:100%;text-align:left}th{font-size:9px;text-transform:uppercase;letter-spacing:.9px;color:#7c887f;background:#fafbf9;font-weight:600;padding:12px 15px;border-bottom:1px solid var(--line);white-space:nowrap}td{font-size:11px;color:#405047;padding:13px 15px;border-bottom:1px solid #edf0eb;white-space:nowrap}tr:last-child td{border-bottom:0}.table-product{display:flex;align-items:center;gap:10px}.mini-art{height:34px;width:34px;border-radius:4px;display:grid;place-items:center;color:#fff;font-family:Georgia,serif;font-size:14px}.badge{padding:4px 7px;border-radius:10px;background:#e9f1e8;color:#42724f;font-size:9px}.badge.low{background:#f8ece6;color:#a85741}.table-action{border:0;background:none;color:#477058;font-size:10px;padding:4px}.orders-empty{padding:48px 18px;text-align:center;color:#8a948c;font-size:12px}.modal-backdrop{position:fixed;inset:0;z-index:10;background:#18251fcc;display:none;align-items:center;justify-content:center;padding:20px}.modal-backdrop.open{display:flex}.modal{width:min(440px,100%);background:#fff;border-radius:8px;box-shadow:0 24px 80px #0003;padding:24px}.modal-head{display:flex;justify-content:space-between;align-items:flex-start}.modal-title{font-family:Georgia,serif;font-size:23px;font-weight:500;color:#293b32;margin:0}.modal-sub{font-size:11px;color:#79847c;margin-top:6px}.close-modal{background:none;border:0;color:#738077;font-size:20px;padding:0 3px}.form-label{display:block;color:#536158;font-size:10px;font-weight:600;margin:17px 0 6px}.form-control{height:39px;width:100%;border:1px solid #dfe4dd;border-radius:4px;padding:0 10px;background:#fff;color:#2c3b33;font-size:12px;outline:none}.checkout-summary{background:#f5f7f3;padding:13px;border-radius:5px;margin-top:18px;display:grid;gap:8px}.receipt-total{font-family:Georgia,serif;font-size:20px;color:#2c4939}.success-mark{width:46px;height:46px;margin:3px 0 15px;border-radius:50%;display:grid;place-items:center;background:#e5efe6;color:#39714d;font-size:23px}.toast{position:fixed;z-index:20;right:24px;bottom:22px;background:#263f33;color:white;padding:12px 16px;border-radius:5px;font-size:12px;box-shadow:0 8px 28px #17291f36;opacity:0;transform:translateY(8px);transition:.2s;pointer-events:none}.toast.show{opacity:1;transform:none}.empty-state{grid-column:1/-1;padding:42px 15px;text-align:center;color:#89938c;font-size:12px}
+@media(max-width:1200px){main{padding:25px 22px}.app{grid-template-columns:196px minmax(0,1fr)}.pos-layout{grid-template-columns:minmax(0,1fr) 315px;gap:15px}.product-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.summary-strip{gap:8px}.metric{padding:12px}}
+@media(max-width:900px){.app{grid-template-columns:68px minmax(0,1fr)}.sidebar{padding:19px 8px}.brand{justify-content:center;padding:0 0 27px}.brand-name,.brand-sub,.nav-label,.nav button .nav-text,.store-card,.user-details{display:none}.nav button{justify-content:center;padding:12px 5px}.nav-icon{font-size:18px}.user{justify-content:center;padding:15px 0 0}.pos-layout{grid-template-columns:minmax(0,1fr) 295px}}
+@media(max-width:700px){.app{display:block}.sidebar{height:auto;position:sticky;z-index:5;top:0;padding:8px 12px;flex-direction:row;align-items:center;justify-content:space-between}.brand{padding:0}.brand-mark{height:32px;width:32px}.brand-name{display:block;font-size:17px}.brand-sub{display:none}.nav{display:flex;gap:2px}.nav button{padding:9px}.nav-icon{font-size:16px}.sidebar-bottom{display:none}main{padding:20px 14px 30px}.topbar{margin-bottom:18px}.page-title{font-size:24px}.date{font-size:10px}.pos-layout{grid-template-columns:1fr}.cart{position:static;grid-row:1}.cart-items{max-height:220px;min-height:90px}.empty-cart{height:90px}.product-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.product-art{height:100px}.summary-strip{grid-template-columns:repeat(3,minmax(0,1fr))}.metric{display:block;padding:10px}.metric-label{font-size:8px}.metric-value{font-size:18px}.metric-icon{display:none}.catalog-heading{align-items:center}.search{width:140px}.section-note{font-size:10px}.section-title{font-size:17px}.catalog-tools .search-wrap{display:none}.product-name{font-size:11px}.page-toolbar{align-items:flex-start;gap:10px}.toolbar-actions{flex-wrap:wrap;justify-content:flex-end}.toolbar-actions button{padding:0 8px}.data-panel td,.data-panel th{padding:11px 10px}}
+</style>
+<style>
+.product-photo{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0}.product-photo~.art-label{background:#142820b8}.mini-product-image{width:100%;height:100%;object-fit:cover;border-radius:4px}.image-preview{display:flex;align-items:center;gap:12px;margin-top:9px}.image-preview img{width:72px;height:72px;border-radius:5px;border:1px solid var(--line);object-fit:cover}.image-input{height:auto;padding:8px;font-size:11px}.form-helper{font-size:10px;color:#87918a;margin-top:5px}
+.art-food-drinks{background:linear-gradient(135deg,#47704e,#a9a64f)}
+</style>
+<style>
+#reservation-modal .modal{max-height:90vh;overflow-y:auto}
+</style>
+<style>
+#profile-modal .modal{max-height:90vh;overflow-y:auto}.profile-switch-section{margin:18px 0 16px;padding:15px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}.profile-switch-title{margin:0 0 5px;color:#304238;font-size:12px;font-weight:650}.profile-switch-note{margin:0 0 4px;color:#7b867e;font-size:10px;line-height:1.5}.profile-switch-empty{padding:11px 0;color:#758078;font-size:11px}
+</style>
+</style>
+<style>
+.order-link{padding:0;border:0;background:transparent;color:#365f49;font-size:11px;font-weight:650;text-decoration:underline;text-decoration-color:#bdcdbf;text-underline-offset:3px}.order-link:hover{text-decoration-color:#365f49}.order-detail-modal{width:min(620px,100%);max-height:90vh;overflow:auto}.order-detail-meta{display:grid;grid-template-columns:1fr 1fr;gap:0 16px;margin:15px 0}.order-meta-cell{padding:10px 0;border-bottom:1px solid var(--line)}.order-meta-label{display:block;font-size:9px;letter-spacing:.8px;text-transform:uppercase;color:#7b867e;margin-bottom:5px}.order-meta-value{font-size:12px;color:#2e4036;font-weight:600}.order-lines{width:100%;margin-top:4px}.order-lines th{padding:10px 8px}.order-lines td{padding:10px 8px;white-space:normal}.order-line-title{font-size:11px;font-weight:600;color:#304238}.order-line-meta{font-size:9px;color:#818b84;margin-top:3px}.order-qty,.order-unit,.order-line-total{text-align:right;white-space:nowrap!important}.order-totals{margin-top:14px}
+</style>
+<style>
+.account-type{font-size:10px;color:#65766b}.nav button[hidden]{display:none}.profile-trigger{width:100%;border:0;background:transparent;color:inherit;text-align:left;font:inherit;cursor:pointer}.profile-trigger:hover .user-name{text-decoration:underline;text-underline-offset:3px}.login-screen[hidden]{display:none}.login-screen:not([hidden]){position:fixed;inset:0;z-index:50;display:grid;place-content:center;justify-items:center;gap:22px;overflow:auto;padding:30px 18px;background-color:#f1f3ed;background-image:linear-gradient(#31524108 1px,transparent 1px),linear-gradient(90deg,#31524108 1px,transparent 1px);background-size:36px 36px}.login-brand{display:flex;align-items:center;gap:11px;color:#263b31}.login-brand-name{font-family:Georgia,serif;font-size:19px;font-weight:700}.login-panel{width:min(410px,calc(100vw - 36px));padding:29px;background:#fff;border:1px solid #dfe5dc;border-radius:7px;box-shadow:0 18px 55px #253a2d12}.login-kicker{font-size:9px;color:#6c816f;letter-spacing:1.4px;text-transform:uppercase}.login-title{font-family:Georgia,serif;font-size:26px;font-weight:500;color:#263b31;margin:9px 0 7px}.login-description{font-size:11px;color:#77837a;margin:0 0 21px}.login-form label{display:block;margin:14px 0 6px;color:#536158;font-size:10px;font-weight:600}.login-form input{height:41px;width:100%;border:1px solid #dfe4dd;border-radius:4px;padding:0 11px;background:#fff;color:#263b31;font-size:12px;outline:none}.login-submit{width:100%;height:42px;margin-top:21px;border:0;border-radius:5px;background:#28533f;color:#fff;font-size:12px;font-weight:650}.login-submit:disabled{opacity:.65;cursor:wait}.login-error{min-height:16px;margin-top:10px;color:#b4513e;font-size:10px}.login-footnote{font-size:10px;color:#8a958c;text-align:center}.auth-locked{overflow:hidden}.topbar-actions{display:flex;align-items:center;gap:18px}.logout-control{display:flex;align-items:center;gap:6px;padding:6px 9px;border:1px solid var(--line);border-radius:5px;background:#fff;color:#53645a;font-size:10px}.logout-control:hover{border-color:#b9c8bc;color:#254b39}@media(max-width:700px){.topbar-actions{gap:8px}.logout-label{display:none}}
+</style>
+<style>
+.inventory-table{table-layout:fixed;width:100%}.inventory-table th:nth-child(1),.inventory-table td:nth-child(1){width:48%}.inventory-table th:nth-child(2),.inventory-table td:nth-child(2),.inventory-table th:nth-child(3),.inventory-table td:nth-child(3){width:18%}.inventory-table th:nth-child(4),.inventory-table td:nth-child(4){width:16%}.inventory-table td{white-space:normal}.inventory-row{cursor:pointer}.inventory-row:hover td{background:#f8faf7}.inventory-row:focus-visible{outline:2px solid #628270;outline-offset:-2px}.inventory-name{display:block;overflow-wrap:anywhere;color:#314239;font-size:11px;font-weight:650}.inventory-subtitle{display:block;margin-top:4px;color:#849087;font-size:9px}.inventory-product-cell{min-width:0}.inventory-detail-modal{width:min(540px,100%)}.inventory-detail-art{height:150px;margin:18px 0;border-radius:5px;display:grid;place-items:center;position:relative;overflow:hidden;color:#fff;font-family:Georgia,serif;font-size:24px}.inventory-detail-image{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#f4f6f2}.inventory-detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:0 18px}.inventory-detail-grid .order-meta-cell:last-child{grid-column:1/-1}.inventory-description{margin:-5px 0 16px;padding:12px 13px;background:#f6f8f4;border-left:2px solid #90a894;color:#58675d;font-size:11px;line-height:1.65;white-space:pre-wrap;overflow-wrap:anywhere}.description-control{height:auto;min-height:86px;padding:10px;resize:vertical;line-height:1.5}.inventory-detail-actions{display:flex;align-items:center;gap:9px;margin-top:15px}.inventory-detail-actions .primary-button{width:auto;flex:1}.inventory-stock-control{display:flex;align-items:center;gap:10px;margin-right:auto}.inventory-stock-control button{height:34px;width:34px;border:1px solid #dce3dc;border-radius:4px;background:#fff;color:#355a45;font-size:18px}.inventory-stock-control span{font-size:11px;color:#42534a;min-width:40px;text-align:center}@media(max-width:560px){.inventory-table th:nth-child(1),.inventory-table td:nth-child(1){width:45%}.inventory-table th:nth-child(2),.inventory-table td:nth-child(2){width:18%}.inventory-table th:nth-child(3),.inventory-table td:nth-child(3){width:18%}.inventory-table th:nth-child(4),.inventory-table td:nth-child(4){width:19%}.inventory-table th,.inventory-table td{padding:10px 7px}.inventory-detail-actions{flex-wrap:wrap}.inventory-stock-control{width:100%}}
+</style>
+<style>
+#product-modal .modal{max-height:90vh;overflow-y:auto}
+</style>
+<style>
+.inventory-sort-button{display:flex;align-items:center;justify-content:space-between;gap:6px;width:100%;padding:0;border:0;background:transparent;color:inherit;text-align:left;text-transform:inherit;font:inherit}.inventory-sort-button:hover{color:#355f48}.inventory-sort-indicator{color:#477058;font-size:11px}
+</style>
+<style>
+.stock-visibility-filter{display:inline-flex;align-items:center;gap:7px;color:#59675e;font-size:10px;white-space:nowrap}.stock-visibility-filter input{margin:0;accent-color:#28533f}
+</style>
+<style>
+.delete-confirmation{margin-top:16px;padding:13px;border:1px solid #efd9d2;border-radius:5px;background:#fbf4f1}.delete-confirmation-message{font-size:11px;line-height:1.5;color:#69483f}.delete-confirmation-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:12px}.delete-product-button{height:36px;padding:0 11px;border:1px solid #e8c7bc;border-radius:5px;background:#fff;color:#a44f3e;font-size:11px}.delete-product-button:hover{background:#fbf1ed}.confirm-delete-button{height:36px;padding:0 12px;border:0;border-radius:5px;background:#a84e3d;color:white;font-size:11px}.confirm-delete-button:hover{background:#8f3e30}
+</style>
+<style>
+.activity-table{min-width:760px}.activity-action{font-weight:650;color:#315541}.activity-details{white-space:normal;min-width:220px;max-width:440px;line-height:1.5;color:#617067}.activity-empty{padding:44px 16px;text-align:center;color:#879188;font-size:12px}
+</style>
+<style>
+.nav-icon{display:grid;place-items:center;width:19px;height:19px;flex:0 0 19px}.nav-icon svg{display:block;width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+</style>
+<style>
+.sales-controls{display:flex;align-items:flex-end;flex-wrap:wrap;gap:12px;margin:6px 0 18px}.sales-control label{display:block;margin-bottom:5px;color:#68766d;font-size:9px;text-transform:uppercase}.sales-control select,.sales-control input{height:35px;min-width:150px;padding:0 9px;border:1px solid #dfe4dd;border-radius:5px;background:#fff;color:#33453b;font-size:11px}.sales-metrics{display:grid;grid-template-columns:repeat(4,minmax(140px,1fr));gap:10px;margin-bottom:8px}.sales-cost-note{margin:0 0 15px;color:#728078;font-size:10px}.sales-chart-wrap{width:100%;overflow-x:auto;background:#fff;border:1px solid var(--line);border-radius:6px;padding:12px}.sales-chart{display:block;width:100%;min-width:640px;height:auto}.sales-grid-line{stroke:#e7ebe5;stroke-width:1}.sales-axis-label{fill:#7d8980;font:10px "Segoe UI",sans-serif}.sales-x-label{fill:#53635a;font:10px "Segoe UI",sans-serif}.sales-legend{display:flex;flex-wrap:wrap;gap:9px 16px;margin:12px 4px 2px}.sales-legend-item{display:inline-flex;align-items:center;gap:6px;color:#56645b;font-size:10px}.sales-legend-swatch{width:9px;height:9px;border-radius:2px}.sales-empty{padding:44px 16px;text-align:center;color:#879188;font-size:12px}.sales-category-section{margin-top:22px}.sales-category-filters{display:flex;align-items:center;flex-wrap:wrap;gap:8px 14px;margin:10px 0 12px}.sales-category-option{display:inline-flex;align-items:center;gap:6px;color:#56645b;font-size:11px;cursor:pointer}.sales-category-option input{accent-color:#28533f}.sales-category-chart-wrap{width:100%;overflow-x:auto;background:#fff;border:1px solid var(--line);border-radius:6px;padding:12px}@media(max-width:700px){.sales-metrics{grid-template-columns:1fr 1fr}.sales-controls{gap:8px}.sales-control select,.sales-control input{min-width:135px}}
+</style>
+<style>
+.reservation-state{white-space:nowrap}.reservation-note{margin-top:14px;padding:12px;background:#f6f8f4;border-radius:5px;color:#59675e;font-size:11px;line-height:1.5;white-space:pre-wrap}.reservation-detail-modal{max-height:90vh;overflow-y:auto}.reservation-detail-actions{display:flex;gap:9px;margin-top:16px}.reservation-detail-actions button{flex:1}
+</style>
+<style>
+.product-preorder-toggle{margin:14px 0 8px}.product-preorder-toggle input{accent-color:#28533f}.product-arrival-wrap{margin-bottom:12px}
+</style>
+</head>
+<body>
+<div class="app" id="app-root">
+<aside class="sidebar">
+  <div class="brand"><div class="brand-mark">M</div><div><div class="brand-name">Mole TCG</div><div class="brand-sub">Card shop, sorted</div></div></div>
+  <div class="nav-label">Workspace</div>
+  <nav class="nav" aria-label="Main navigation">
+    <button class="active" data-page="pos"><span class="nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 9h14a2 2 0 0 1 2 2v9H3v-9a2 2 0 0 1 2-2Z"/><path d="M7 9V5h10v4M3 15h18M7 12h2m3 0h2m3 0h2M7 17v3m10-3v3"/></svg></span><span class="nav-text">Point of sale</span></button>
+    <button data-page="inventory"><span class="nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3 9 5-9 5-9-5 9-5Z"/><path d="m3 8 9 5 9-5v10l-9 5-9-5V8Z"/><path d="M12 13v10M7.5 5.5l9 5"/></svg></span><span class="nav-text">Inventory</span></button>
+    <button data-page="orders"><span class="nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16v4a2 2 0 0 0 0 4v4H4v-4a2 2 0 0 0 0-4V6Z"/><path d="M9 9v1m0 3v2m4-6v1m0 3v2"/></svg></span><span class="nav-text">Orders</span></button>
+    <button data-page="reservations"><span class="nav-icon">▣</span><span class="nav-text">Reservations</span></button>
+    <button data-page="sales"><span class="nav-icon">▥</span><span class="nav-text">Sales report</span></button>
+    <button data-page="activity"><span class="nav-icon">◴</span><span class="nav-text">Activity</span></button>
+    <button data-page="accounts" id="accounts-nav" hidden><span class="nav-icon">♙</span><span class="nav-text">Accounts</span></button>
+  </nav>
+  <div class="sidebar-bottom"><div class="store-card"><div class="store-head"><span class="online-dot"></span> Store open</div><div class="store-meta">Main Street · Local register</div></div><button type="button" class="user profile-trigger" id="profile-trigger" aria-label="View account and change password"><div class="avatar" id="user-avatar">M</div><div class="user-details"><div class="user-name" id="user-name">Store manager</div><div class="user-role" id="user-role">Administrator</div></div></button></div>
+</aside>
+<main>
+<header class="topbar"><div><div class="eyebrow">Mole TCG / <span id="crumb">Sales floor</span></div><h1 class="page-title" id="page-title">Point of sale</h1></div><div class="topbar-actions"><button class="logout-control" id="logout" title="Log out">↪ <span class="logout-label">Log out</span></button><div class="date" id="today"></div></div></header>
+<section class="workspace active" id="page-pos">
+ <div class="pos-layout">
+  <div class="catalog">
+   <div class="summary-strip"><div class="metric"><div><div class="metric-label">Today's sales</div><div class="metric-value" id="sales-today">$0.00</div></div><div class="metric-icon">↗</div></div><div class="metric"><div><div class="metric-label">Transactions</div><div class="metric-value" id="orders-today">0</div></div><div class="metric-icon">⌑</div></div><div class="metric"><div><div class="metric-label">Items in stock</div><div class="metric-value" id="stock-count">0</div></div><div class="metric-icon">◈</div></div></div>
+   <div class="catalog-heading"><div><h2 class="section-title">Browse products</h2><div class="section-note">Pick an item to add it to the sale</div></div><div class="catalog-tools"><label class="search-wrap"><span class="search-icon">⌕</span><input class="search" id="search" placeholder="Search products" aria-label="Search products"></label></div></div>
+  <div class="filter-row" id="filters"><button class="filter active" data-filter="All">All items</button><button class="filter" data-filter="Pokémon">Pokémon</button><button class="filter" data-filter="Magic">Magic</button><button class="filter" data-filter="One Piece">One Piece</button><button class="filter" data-filter="Yu-Gi-Oh!">Yu-Gi-Oh!</button><button class="filter" data-filter="Lorcana">Lorcana</button><button class="filter" data-filter="Accessories">Accessories</button><button class="filter" data-filter="Food &amp; Drinks">Food &amp; Drinks</button><button class="filter" data-filter="Out of stock">Out of stock</button></div>
+   <div class="product-grid" id="product-grid"></div>
+  </div>
+  <aside class="cart"><div class="cart-head"><div class="cart-title">Current sale</div><span class="cart-count" id="cart-count">0 items</span></div><div class="cart-items" id="cart-items"></div><div class="cart-bottom"><div class="totals"><div class="total-row grand"><span>Total due</span><span id="total">MXN 0.00</span></div></div><button class="checkout-button" id="checkout" disabled>Charge MXN 0.00</button><div class="tax-note">Prices include tax · MXN</div></div></aside>
+ </div>
+</section>
+<section class="workspace" id="page-inventory">
+ <div class="page-toolbar"><div><h2 class="section-title">Stock on hand</h2><div class="section-note">Keep your shelves and listings in sync</div></div><div class="toolbar-actions"><label class="search-wrap"><span class="search-icon">⌕</span><input class="search" id="inventory-search" placeholder="Find an item" aria-label="Search inventory"></label><select class="secondary-button" id="inventory-category" aria-label="Filter inventory by category"><option value="All">All categories</option></select><label class="stock-visibility-filter"><input id="hide-sold-out" type="checkbox"> Hide sold out items</label><button class="secondary-button" id="add-product">+ Add product</button></div></div>
+ <div class="data-panel"><div class="table-scroll"><table class="inventory-table"><thead><tr><th scope="col" aria-sort="ascending"><button class="inventory-sort-button" data-inventory-sort="name" data-sort-label="product" aria-label="Sort by product, ascending">Product <span class="inventory-sort-indicator" aria-hidden="true">↑</span></button></th><th scope="col" aria-sort="none"><button class="inventory-sort-button" data-inventory-sort="price" data-sort-label="price" aria-label="Sort by price, ascending">Price <span class="inventory-sort-indicator" aria-hidden="true">↕</span></button></th><th scope="col" aria-sort="none"><button class="inventory-sort-button" data-inventory-sort="cost" data-sort-label="cost" aria-label="Sort by cost, ascending">Cost <span class="inventory-sort-indicator" aria-hidden="true">↕</span></button></th><th scope="col" aria-sort="none"><button class="inventory-sort-button" data-inventory-sort="stock" data-sort-label="stock" aria-label="Sort by stock, ascending">Stock <span class="inventory-sort-indicator" aria-hidden="true">↕</span></button></th></tr></thead><tbody id="inventory-body"></tbody></table></div></div>
+</section>
+<div class="modal-backdrop" id="inventory-detail-modal" role="dialog" aria-modal="true" aria-labelledby="inventory-detail-title"><div class="modal inventory-detail-modal"><div class="modal-head"><div><h2 class="modal-title" id="inventory-detail-title">Product details</h2><div class="modal-sub" id="inventory-detail-subtitle"></div></div><button class="close-modal" data-close aria-label="Close">×</button></div><div class="inventory-detail-art" id="inventory-detail-art"></div><div class="inventory-description" id="inventory-detail-description"></div><div class="inventory-detail-grid" id="inventory-detail-grid"></div><div class="inventory-detail-actions" id="inventory-detail-actions"><div class="inventory-stock-control"><button type="button" data-detail-stock="-1" aria-label="Decrease stock">−</button><span id="inventory-detail-stock"></span><button type="button" data-detail-stock="1" aria-label="Increase stock">+</button></div><button class="primary-button" id="inventory-detail-edit">Edit product</button><button class="delete-product-button" id="inventory-detail-delete">Delete product</button></div><div class="delete-confirmation" id="delete-confirmation" hidden><div class="delete-confirmation-message">Delete this product from active inventory? Any copy in the current sale will be removed. Completed orders will be kept.</div><div class="delete-confirmation-actions"><button type="button" class="secondary-button" id="cancel-product-delete">Keep product</button><button type="button" class="confirm-delete-button" id="confirm-product-delete">Delete product</button></div></div></div></div>
+<section class="workspace" id="page-orders">
+ <div class="page-toolbar"><div><h2 class="section-title">Recent transactions</h2><div class="section-note">A running record of sales from this register</div></div><select class="secondary-button" id="order-channel-filter" aria-label="Filter orders by sales channel"><option>All channels</option><option>Physical store</option><option>TikTok</option><option>MercadoLibre</option><option>Facebook</option></select></div>
+ <div class="data-panel"><div class="table-scroll"><table><thead><tr><th>Receipt</th><th>Date &amp; time</th><th>Sold by</th><th>Items</th><th>Sales channel</th><th>Payment</th><th>Total</th></tr></thead><tbody id="orders-body"></tbody></table></div></div>
+</section>
+<section class="workspace" id="page-reservations">
+ <div class="page-toolbar"><div><h2 class="section-title">Pre-orders &amp; reservations</h2><div class="section-note">Track upcoming products, customer payments, and arrival dates.</div></div><button class="secondary-button" id="add-reservation">+ New reservation</button></div>
+ <div class="data-panel"><div class="table-scroll"><table><thead><tr><th>Reservation</th><th>Customer</th><th>Product</th><th>Qty</th><th>Arrival date</th><th>Paid</th><th>Balance</th><th>Status</th></tr></thead><tbody id="reservations-body"></tbody></table></div></div>
+</section>
+<section class="workspace" id="page-sales">
+ <div class="page-toolbar"><div><h2 class="section-title">Sales report</h2><div class="section-note">Daily sales, recorded product costs, and gross profit in MXN.</div></div></div>
+ <div class="sales-controls"><div class="sales-control"><label for="sales-user">User</label><select id="sales-user"><option value="all">All users</option></select></div><div class="sales-control"><label for="sales-from">From</label><input id="sales-from" type="date"></div><div class="sales-control"><label for="sales-to">To</label><input id="sales-to" type="date"></div></div>
+ <div class="sales-metrics"><div class="metric"><div><div class="metric-label">Sales in range</div><div class="metric-value" id="sales-range-total">MXN 0.00</div></div></div><div class="metric"><div><div class="metric-label">Product costs</div><div class="metric-value" id="sales-range-cost">MXN 0.00</div></div></div><div class="metric"><div><div class="metric-label">Gross profit</div><div class="metric-value" id="sales-range-profit">MXN 0.00</div></div></div><div class="metric"><div><div class="metric-label">Transactions</div><div class="metric-value" id="sales-range-count">0</div></div></div></div>
+ <div class="sales-cost-note" id="sales-cost-note">Gross profit is sales minus recorded item costs; platform fees are not included.</div>
+ <div class="sales-chart-wrap"><div id="sales-chart"></div><div class="sales-legend" id="sales-legend"></div></div>
+ <div class="sales-category-section"><div class="page-toolbar"><div><h2 class="section-title">Sales by product category</h2><div class="section-note">Select categories to compare daily sales. The date and user filters above apply.</div></div></div><div class="sales-category-filters" id="sales-category-filters"></div><div class="sales-category-chart-wrap"><div id="sales-category-chart"></div><div class="sales-legend" id="sales-category-legend"></div></div></div>
+</section>
+<section class="workspace" id="page-accounts">
+ <div class="page-toolbar"><div><h2 class="section-title">Team accounts</h2><div class="section-note">Create individual sign-ins for your staff.</div></div><button class="secondary-button" id="add-account">+ Create account</button></div>
+ <div class="data-panel"><div class="table-scroll"><table><thead><tr><th>Username</th><th>Account type</th><th>Status</th></tr></thead><tbody id="accounts-body"></tbody></table></div></div>
+</section>
+<section class="workspace" id="page-activity">
+ <div class="page-toolbar"><div><h2 class="section-title">Activity log</h2><div class="section-note">Recorded sales, inventory, and account changes.</div></div></div>
+ <div class="data-panel"><div class="table-scroll"><table class="activity-table"><thead><tr><th>Date &amp; time</th><th>User</th><th>Action</th><th>Item or record</th><th>Details</th></tr></thead><tbody id="activity-body"></tbody></table></div></div>
+</section>
+</main>
+</div>
+<div class="modal-backdrop" id="reservation-modal" role="dialog" aria-modal="true" aria-labelledby="reservation-modal-title"><div class="modal"><div class="modal-head"><div><h2 class="modal-title" id="reservation-modal-title">New reservation</h2><div class="modal-sub">Record a pre-order and any payment received.</div></div><button class="close-modal" data-close aria-label="Close">×</button></div><form id="reservation-form" class="login-form"><label for="reservation-customer">Customer name</label><input class="form-control" id="reservation-customer" required maxlength="100"><label for="reservation-contact">Phone number</label><input class="form-control" id="reservation-contact" type="tel" inputmode="numeric" pattern="[0-9]{7,15}" maxlength="15" autocomplete="tel" title="Enter 7 to 15 digits." required><label for="reservation-product">Product</label><select class="form-control" id="reservation-product" required></select><div style="display:grid;grid-template-columns:1fr 1fr;gap:12px"><div><label for="reservation-quantity">Quantity</label><input class="form-control" id="reservation-quantity" type="number" min="1" step="1" value="1" required></div><div><label for="reservation-unit-price">Price per item (MXN)</label><input class="form-control" id="reservation-unit-price" type="number" min="0.01" step="0.01" required></div></div><label for="reservation-paid">Amount paid so far (MXN)</label><input class="form-control" id="reservation-paid" type="number" min="0" step="0.01" value="0" required><label for="reservation-arrival">Expected arrival date</label><input class="form-control" id="reservation-arrival" type="date" required><label for="reservation-notes">Notes (optional)</label><textarea class="form-control description-control" id="reservation-notes" maxlength="400"></textarea><div class="login-error" id="reservation-error" role="alert" aria-live="polite"></div><button class="primary-button" type="submit">Save reservation</button></form></div></div>
+<div class="modal-backdrop" id="reservation-detail-modal" role="dialog" aria-modal="true" aria-labelledby="reservation-detail-title"><div class="modal reservation-detail-modal"><div class="modal-head"><div><h2 class="modal-title" id="reservation-detail-title"></h2><div class="modal-sub" id="reservation-detail-created"></div></div><button class="close-modal" data-close aria-label="Close">×</button></div><div class="reservation-detail-meta" id="reservation-detail-meta"></div><div class="order-detail-items" id="reservation-detail-item"></div><div class="checkout-summary order-totals"><div class="total-row"><span>Reservation total</span><span id="reservation-detail-total"></span></div><div class="total-row"><span>Paid</span><span id="reservation-detail-paid"></span></div><div class="total-row grand"><span>Balance due</span><span class="receipt-total" id="reservation-detail-balance"></span></div></div><div class="reservation-detail-actions" id="reservation-detail-actions"><button class="secondary-button" id="cancel-reservation">Cancel reservation</button><button class="primary-button" id="mark-reservation-arrived">Mark item arrived</button></div></div></div>
+<div class="login-screen" id="login-screen" hidden>
+ <div class="login-brand"><div class="brand-mark">M</div><div class="login-brand-name">Mole TCG</div></div>
+ <section class="login-panel"><div class="login-kicker" id="login-kicker">Secure sign-in</div><h1 class="login-title" id="login-title">Sign in</h1><p class="login-description" id="login-description">Enter your username and password to open the point of sale.</p><form class="login-form" id="login-form"><label for="login-username">Username</label><input id="login-username" required maxlength="32" autocomplete="username"><label for="login-password">Password</label><input id="login-password" type="password" required minlength="8" autocomplete="current-password"><div id="setup-confirm-wrap" hidden><label for="setup-password-confirm">Confirm password</label><input id="setup-password-confirm" type="password" minlength="8" autocomplete="new-password"></div><button class="login-submit" id="login-submit" type="submit">Sign in</button><div class="login-error" id="login-error" role="alert" aria-live="polite"></div></form></section>
+ <div class="login-footnote">Accounts and store data are saved on this device.</div>
+</div>
+<div class="modal-backdrop" id="profile-modal" role="dialog" aria-modal="true" aria-labelledby="profile-title"><div class="modal"><div class="modal-head"><div><h2 class="modal-title" id="profile-title">My account</h2><div class="modal-sub">Your sign-in details</div></div><button class="close-modal" data-close aria-label="Close">×</button></div><div class="checkout-summary" style="margin-top:18px"><div class="total-row"><span>Username</span><strong id="profile-username"></strong></div><div class="total-row"><span>Account type</span><strong id="profile-role"></strong></div></div><form class="login-form" id="password-change-form"><label for="current-password">Current password</label><input id="current-password" type="password" required autocomplete="current-password"><label for="new-password">New password (at least 8 characters)</label><input id="new-password" type="password" required minlength="8" autocomplete="new-password"><label for="confirm-new-password">Confirm new password</label><input id="confirm-new-password" type="password" required minlength="8" autocomplete="new-password"><button class="primary-button" type="submit">Change password</button><div class="login-error" id="password-change-error" role="alert" aria-live="polite"></div></form></div></div>
+<div class="modal-backdrop" id="account-modal" role="dialog" aria-modal="true" aria-labelledby="account-modal-title"><div class="modal"><div class="modal-head"><div><h2 class="modal-title" id="account-modal-title">Create secondary account</h2><div class="modal-sub">Give each team member their own sign-in.</div></div><button class="close-modal" data-close aria-label="Close">×</button></div><form id="account-form" class="login-form"><label for="new-account-username">Username</label><input id="new-account-username" required maxlength="32" autocomplete="off"><label for="new-account-password">Password (at least 8 characters)</label><input id="new-account-password" type="password" required minlength="8" autocomplete="new-password"><label for="new-account-confirm">Confirm password</label><input id="new-account-confirm" type="password" required minlength="8" autocomplete="new-password"><button class="primary-button" type="submit">Create account</button><div class="login-error" id="account-error" role="alert" aria-live="polite"></div></form></div></div>
+<div class="modal-backdrop" id="order-detail-modal" role="dialog" aria-modal="true" aria-labelledby="order-detail-title"><div class="modal order-detail-modal"><div class="modal-head"><div><h2 class="modal-title" id="order-detail-title">Order details</h2><div class="modal-sub" id="order-detail-date"></div></div><button class="close-modal" data-close aria-label="Close">×</button></div><div class="order-detail-meta" id="order-detail-meta"></div><div class="table-scroll"><table class="order-lines"><thead><tr><th>Product</th><th class="order-qty">Qty</th><th class="order-unit">Unit price</th><th class="order-line-total">Line total</th></tr></thead><tbody id="order-detail-items"></tbody></table></div><div class="checkout-summary order-totals"><div class="total-row grand"><span>Total paid (tax included)</span><span class="receipt-total" id="detail-total"></span></div></div></div></div>
+<div class="modal-backdrop" id="checkout-modal" role="dialog" aria-modal="true" aria-labelledby="checkout-title"><div class="modal"><div id="checkout-form"><div class="modal-head"><div><h2 class="modal-title" id="checkout-title">Complete sale</h2><div class="modal-sub">Choose where the sale was made and how it was paid.</div></div><button class="close-modal" data-close aria-label="Close">×</button></div><label class="form-label" for="sale-channel">Sales channel</label><select class="form-control" id="sale-channel"><option>Physical store</option><option>TikTok</option><option>MercadoLibre</option><option>Facebook</option></select><label class="form-label" for="payment-method">Payment method</label><select class="form-control" id="payment-method"><option>Card</option><option>Cash</option><option>Transfer</option><option>Store credit</option><option>Other</option></select><div class="checkout-summary"><div class="total-row grand"><span>Total charged (tax included)</span><span class="receipt-total" id="modal-total">MXN 0.00</span></div></div><button class="primary-button" id="confirm-sale">Confirm payment</button></div><div id="checkout-success" hidden><div class="success-mark">✓</div><h2 class="modal-title">Sale complete</h2><div class="modal-sub" id="success-receipt"></div><button class="secondary-button" id="print-receipt" type="button" style="width:100%;margin-top:15px">Print ticket</button><button class="primary-button" id="new-sale">Start next sale</button></div></div></div>
+<div class="modal-backdrop" id="product-modal" role="dialog" aria-modal="true" aria-labelledby="product-modal-title"><div class="modal"><div class="modal-head"><div><h2 class="modal-title" id="product-modal-title">Add a product</h2><div class="modal-sub" id="product-modal-subtitle">Add an item to your local stock list.</div></div><button class="close-modal" data-close aria-label="Close">×</button></div><form id="product-form"><label class="form-label" for="new-name">Product name</label><input class="form-control" id="new-name" required maxlength="70" placeholder="e.g. Booster display box"><label class="form-label" for="new-category">Category</label><select class="form-control" id="new-category"><option>Pokémon</option><option>Magic</option><option>One Piece</option><option>Yu-Gi-Oh!</option><option>Lorcana</option><option>Accessories</option><option>Food &amp; Drinks</option><option>Single cards</option></select><label class="form-label" for="new-sku">SKU</label><input class="form-control" id="new-sku" maxlength="40" placeholder="Optional product code"><div style="display:grid;grid-template-columns:1fr 1fr;gap:12px"><div><label class="form-label" for="new-price">Price (MXN, tax included)</label><input class="form-control" id="new-price" required type="number" min="0.01" step="0.01" placeholder="0.00"></div><div><label class="form-label" for="new-stock">Stock quantity</label><input class="form-control" id="new-stock" required type="number" min="0" step="1" value="1"></div></div><label class="form-label" for="new-cost">Cost you paid (MXN)</label><input class="form-control" id="new-cost" type="number" min="0" step="0.01" placeholder="Leave blank if unknown"><label class="form-label" for="product-image">Product image</label><input class="form-control image-input" id="product-image" type="file" accept="image/*"><div class="form-helper">Images are resized and saved on this device.</div><div class="image-preview" id="image-preview-wrap" hidden><img id="image-preview" alt="Product preview"><button class="secondary-button" id="remove-image" type="button">Remove image</button></div><button class="primary-button" id="save-product" type="submit">Add to inventory</button></form></div></div>
+<template id="product-subcategory-template"><label class="form-label" for="new-subcategory">Item type / subcategory</label><select class="form-control" id="new-subcategory"><option value="Unspecified">Unspecified</option></select></template>
+<template id="product-preorder-template"><label class="stock-visibility-filter product-preorder-toggle"><input id="new-is-preorder" type="checkbox"> Available for pre-order</label><div class="product-arrival-wrap" id="product-arrival-wrap" hidden><label class="form-label" for="new-product-arrival">Expected arrival date</label><input class="form-control" id="new-product-arrival" type="date"></div></template>
+<template id="product-description-template"><label class="form-label" for="new-description">Description</label><textarea class="form-control description-control" id="new-description" maxlength="500" placeholder="Add details about this product"></textarea></template>
+<template id="quick-switch-template"><section class="profile-switch-section"><h3 class="profile-switch-title">Switch user</h3><p class="profile-switch-note">Select another account and enter its password.</p><div class="profile-switch-empty" id="switch-user-empty" hidden>No other accounts are available.</div><form class="login-form" id="quick-switch-form"><label for="switch-account">User</label><select class="form-control" id="switch-account" required></select><label for="switch-password">Password</label><input class="form-control" id="switch-password" type="password" required autocomplete="off"><button class="primary-button" type="submit">Switch user</button><div class="login-error" id="switch-user-error" role="alert" aria-live="polite"></div></form></section></template>
+<div class="toast" id="toast" role="status"></div>
+<script>
+const initialProducts = [
+ {id:'demo-pkm-001',name:'Pokémon Booster Pack',category:'Pokémon',subcategory:'Pack',cost:90,price:108,stock:10,sku:'DEMO-PKM-001',art:'pokemon',tag:'Booster pack',mark:'PKM',description:'Demonstration product. Estimated cost; sale price set at a 20% markup.',isPreorder:false,expectedArrivalDate:''},
+ {id:'demo-pkm-002',name:'Pokémon Elite Trainer Box',category:'Pokémon',subcategory:'ETB',cost:900,price:1080,stock:10,sku:'DEMO-PKM-002',art:'pokemon',tag:'ETB',mark:'ETB',description:'Demonstration product. Estimated cost; sale price set at a 20% markup.',isPreorder:false,expectedArrivalDate:''},
+ {id:'demo-mtg-001',name:'Magic Play Booster Pack',category:'Magic',subcategory:'Pack',cost:95,price:114,stock:10,sku:'DEMO-MTG-001',art:'magic',tag:'Booster pack',mark:'MTG',description:'Demonstration product. Estimated cost; sale price set at a 20% markup.',isPreorder:false,expectedArrivalDate:''},
+ {id:'demo-mtg-002',name:'Magic Commander Deck',category:'Magic',subcategory:'Commander deck',cost:780,price:936,stock:10,sku:'DEMO-MTG-002',art:'magic',tag:'Commander deck',mark:'CMD',description:'Demonstration product. Estimated cost; sale price set at a 20% markup.',isPreorder:false,expectedArrivalDate:''},
+ {id:'demo-op-001',name:'One Piece Booster Pack',category:'One Piece',subcategory:'Pack',cost:105,price:126,stock:10,sku:'DEMO-OP-001',art:'onepiece',tag:'Booster pack',mark:'OP',description:'Demonstration product. Estimated cost; sale price set at a 20% markup.',isPreorder:false,expectedArrivalDate:''},
+ {id:'demo-op-002',name:'One Piece Starter Deck',category:'One Piece',subcategory:'Starter deck',cost:220,price:264,stock:10,sku:'DEMO-OP-002',art:'onepiece',tag:'Starter deck',mark:'ST',description:'Demonstration product. Estimated cost; sale price set at a 20% markup.',isPreorder:false,expectedArrivalDate:''},
+ {id:'demo-ygo-001',name:'Yu-Gi-Oh! Booster Pack',category:'Yu-Gi-Oh!',subcategory:'Pack',cost:80,price:96,stock:10,sku:'DEMO-YGO-001',art:'yugioh',tag:'Booster pack',mark:'YGO',description:'Demonstration product. Estimated cost; sale price set at a 20% markup.',isPreorder:false,expectedArrivalDate:''},
+ {id:'demo-ygo-002',name:'Yu-Gi-Oh! Structure Deck',category:'Yu-Gi-Oh!',subcategory:'Structure deck',cost:180,price:216,stock:10,sku:'DEMO-YGO-002',art:'yugioh',tag:'Structure deck',mark:'SD',description:'Demonstration product. Estimated cost; sale price set at a 20% markup.',isPreorder:false,expectedArrivalDate:''},
+ {id:'demo-lor-001',name:'Lorcana Booster Pack',category:'Lorcana',subcategory:'Pack',cost:110,price:132,stock:10,sku:'DEMO-LOR-001',art:'lorcana',tag:'Booster pack',mark:'LOR',description:'Demonstration product. Estimated cost; sale price set at a 20% markup.',isPreorder:false,expectedArrivalDate:''},
+ {id:'demo-lor-002',name:'Lorcana Starter Deck',category:'Lorcana',subcategory:'Starter deck',cost:220,price:264,stock:10,sku:'DEMO-LOR-002',art:'lorcana',tag:'Starter deck',mark:'ST',description:'Demonstration product. Estimated cost; sale price set at a 20% markup.',isPreorder:false,expectedArrivalDate:''},
+ {id:'demo-acc-001',name:'Card Sleeves · 100 ct',category:'Accessories',subcategory:'Sleeves',cost:60,price:72,stock:10,sku:'DEMO-ACC-001',art:'accessory',tag:'Accessories',mark:'SLV',description:'Demonstration product. Estimated cost; sale price set at a 20% markup.',isPreorder:false,expectedArrivalDate:''},
+ {id:'demo-acc-002',name:'Trading Card Deck Box',category:'Accessories',subcategory:'Deck box',cost:120,price:144,stock:10,sku:'DEMO-ACC-002',art:'accessory',tag:'Accessories',mark:'BOX',description:'Demonstration product. Estimated cost; sale price set at a 20% markup.',isPreorder:false,expectedArrivalDate:''},
+ {id:'demo-fd-001',name:'Bottled Water',category:'Food & Drinks',subcategory:'Drinks',cost:10,price:12,stock:10,sku:'DEMO-FD-001',art:'accessory',tag:'Drinks',mark:'WTR',description:'Demonstration product. Estimated cost; sale price set at a 20% markup.',isPreorder:false,expectedArrivalDate:''},
+ {id:'demo-fd-002',name:'Packaged Snack',category:'Food & Drinks',subcategory:'Snacks',cost:20,price:24,stock:10,sku:'DEMO-FD-002',art:'accessory',tag:'Snacks',mark:'SNK',description:'Demonstration product. Estimated cost; sale price set at a 20% markup.',isPreorder:false,expectedArrivalDate:''},
+ {id:'demo-sgl-001',name:'Pokémon Single Card · Demo',category:'Single cards',subcategory:'Pokémon',cost:50,price:60,stock:10,sku:'DEMO-SGL-001',art:'single',tag:'Single card',mark:'PKM',description:'Demonstration product. Estimated cost; sale price set at a 20% markup.',isPreorder:false,expectedArrivalDate:''},
+ {id:'demo-sgl-002',name:'Magic Single Card · Demo',category:'Single cards',subcategory:'Magic',cost:100,price:120,stock:10,sku:'DEMO-SGL-002',art:'single',tag:'Single card',mark:'MTG',description:'Demonstration product. Estimated cost; sale price set at a 20% markup.',isPreorder:false,expectedArrivalDate:''}
+];
+const load = (key, fallback) => { try { const value = localStorage.getItem(key); return value ? JSON.parse(value) : fallback; } catch { return fallback; } };
+let products = load('mole-products', initialProducts);
+let cart = load('mole-cart', []);
+let orders = load('mole-orders', []);
+let reservations = load('mole-reservations', []);
+if (!Array.isArray(reservations)) reservations = [];
+let activityLog = load('mole-activity', []);
+if (!Array.isArray(activityLog)) activityLog = [];
+let accounts = load('mole-accounts', []);
+if (!Array.isArray(accounts)) accounts = [];
+let activeAccount = null;
+let lastCompletedOrder = null;
+let selectedSalesCategories = null;
+let activeCategory = 'All';
+let inventorySort = {key:'name',direction:'asc'};
+let currentPage = 'pos';
+let editingProductId = null;
+let pendingImage = null;
+let removeProductImage = false;
+const currencyFormatter = new Intl.NumberFormat('es-MX',{style:'currency',currency:'MXN',currencyDisplay:'code'});
+const money = value => currencyFormatter.format(Number(value) || 0);
+const persist = () => { localStorage.setItem('mole-products', JSON.stringify(products)); localStorage.setItem('mole-cart', JSON.stringify(cart)); localStorage.setItem('mole-orders', JSON.stringify(orders)); };
+const esc = value => String(value).replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
+const getTotals = () => { const subtotal = cart.reduce((sum, item) => sum + item.price * item.qty, 0); return {subtotal, tax:0, total:subtotal}; };
+const toast = message => { const el = document.getElementById('toast'); el.textContent = message; el.classList.add('show'); clearTimeout(toast.timer); toast.timer = setTimeout(() => el.classList.remove('show'), 2300); };
+function printReceipt(order) {
+ if (!order) { toast('There is no completed sale to print.'); return; }
+ const printWindow = window.open('', '_blank', 'width=420,height=700');
+ if (!printWindow) { toast('Could not open the print window. Check your popup settings.'); return; }
+ const items = order.items.map(item => `<div class="item"><span>${esc(item.qty)} × ${esc(item.name)}</span><span>${money(item.price * item.qty)}</span></div><div class="unit">${money(item.price)} each</div>`).join('');
+ const receipt = `<!doctype html><html lang="es"><head><meta charset="utf-8"><title>Ticket ${esc(order.receipt)}</title><style>@page{margin:0}*{box-sizing:border-box}body{width:54mm;margin:0 auto;padding:3mm 2mm;color:#111;background:#fff;font:10px/1.35 Arial,sans-serif}.center{text-align:center}.brand{font-size:16px;font-weight:bold;margin-bottom:2px}.muted{color:#444;font-size:9px}.legal{max-width:50mm;margin:2px auto;font-size:8px;line-height:1.25;overflow-wrap:anywhere}.rule{border:0;border-top:1px dashed #555;margin:8px 0}.item{display:flex;align-items:flex-start;gap:4px;margin:6px 0 0}.item span:first-child{flex:1 1 0;min-width:0;overflow-wrap:anywhere}.item span:last-child{flex-shrink:0;text-align:right;white-space:nowrap}.unit{color:#444;font-size:9px}.meta{margin:3px 0}.total{display:flex;justify-content:space-between;gap:4px;font-size:13px;font-weight:bold;margin-top:8px}.total span:last-child{flex-shrink:0;white-space:nowrap}.thanks{margin-top:12px}</style></head><body><header class="center"><div class="brand">MoleTCG</div><div class="legal">RFC: HETE9608123U2</div><div class="legal">Calle Paraje, Ave. Ensenada Grande S/N, esq. Col. Las Villas, Guaymas, Sonora, México</div><div class="legal">Tel: 6222554780</div><div class="muted">Ticket de venta</div></header><hr class="rule"><div class="meta">Folio: ${esc(order.receipt)}</div><div class="meta">Fecha: ${esc(new Date(order.time).toLocaleString('es-MX'))}</div><div class="meta">Canal: ${esc(order.channel)}</div><div class="meta">Pago: ${esc(order.payment)}</div><hr class="rule">${items}<hr class="rule"><div class="total"><span>TOTAL</span><span>${money(order.total)}</span></div><div class="center muted thanks">Gracias por tu compra</div></body></html>`;
+ try {
+  printWindow.document.open();
+  printWindow.document.write(receipt);
+  printWindow.document.close();
+  printWindow.addEventListener('afterprint', () => printWindow.close(), {once:true});
+  printWindow.focus();
+  printWindow.requestAnimationFrame(() => printWindow.requestAnimationFrame(() => printWindow.print()));
+ } catch (error) {
+  printWindow.close();
+  toast(`Could not print the ticket: ${error.message || 'unknown error'}`);
+ }
+}
+const colorFor = product => 'art-' + (product.art || 'accessory');
+const formatDate = value => value ? new Date(`${value}T12:00:00`).toLocaleDateString('es-MX') : 'Date pending';
+const productSubcategoryOptions = {
+ 'Pokémon':['Pack','ETB','Blister','Booster bundle','Build & Battle','UPC','Single card','Other'],
+ 'One Piece':['Pack','Single card','Starter deck','Booster box','Other'],
+ 'Magic':['Pack','Booster box','Bundle','Commander deck','Single card','Other'],
+ 'Yu-Gi-Oh!':['Pack','Tin','Structure deck','Single card','Other'],
+ 'Lorcana':['Pack','Illumineer’s Trove','Starter deck','Single card','Other'],
+ 'Accessories':['Sleeves','Binder','Deck box','Playmat','Other'],
+ 'Food & Drinks':['Drinks','Snacks','Candy','Other'],
+ 'Single cards':['Pokémon','One Piece','Magic','Yu-Gi-Oh!','Lorcana','Other']
+};
+function populateProductSubcategories(category, selected = 'Unspecified') {
+ const select = document.getElementById('new-subcategory');
+ const options = productSubcategoryOptions[category] || ['Other'];
+ select.replaceChildren(new Option('Unspecified','Unspecified'),...options.map(value=>new Option(value,value)));
+ select.value = ['Unspecified',...options].includes(selected) ? selected : 'Unspecified';
+}
+function renderProducts() {
+ const query = document.getElementById('search').value.trim().toLowerCase();
+ const shown = products.filter(product => (activeCategory === 'All' || (activeCategory === 'Out of stock' ? product.stock <= 0 : product.category === activeCategory)) && (!query || (product.name + ' ' + product.category + ' ' + (product.subcategory || '') + ' ' + product.sku).toLowerCase().includes(query)));
+ document.getElementById('product-grid').innerHTML = shown.length ? shown.map(product => `<article class="product"><div class="product-art ${colorFor(product)}">${product.image ? `<img class="product-photo" src="${esc(product.image)}" alt="">` : `<span class="art-title">${esc(product.mark || 'TCG')}<br>${esc(product.category)}</span>`}<span class="art-label">${esc(product.tag || product.category)}</span></div><div class="product-content"><div class="product-name">${esc(product.name)}</div><div class="product-meta"><span>${esc(product.category)}${product.subcategory && product.subcategory !== 'Unspecified' ? ` · ${esc(product.subcategory)}` : ''}${product.isPreorder ? ` · Pre-order · ETA ${esc(formatDate(product.expectedArrivalDate))}` : ''}</span><span class="${product.stock <= 3 ? 'stock-low' : ''}">${product.stock <= 0 ? 'Out of stock' : `${product.stock} in stock`}</span></div><div class="product-footer"><span class="price">${money(product.price)}</span><button class="add-button" data-add="${esc(product.id)}" aria-label="Add ${esc(product.name)}" ${product.stock <= 0 ? 'disabled' : ''}>+</button></div></div></article>`).join('') : '<div class="empty-state">No products match your search.</div>';
+}
+function renderCart() {
+ const container = document.getElementById('cart-items');
+ const count = cart.reduce((sum, item) => sum + item.qty, 0);
+ document.getElementById('cart-count').textContent = `${count} ${count === 1 ? 'item' : 'items'}`;
+ container.innerHTML = cart.length ? cart.map(item => `<div class="cart-item"><div><div class="cart-item-name">${esc(item.name)}</div><div class="cart-item-unit">${money(item.price)} each</div><div class="qty-control"><button data-qty="${esc(item.id)}" data-delta="-1" aria-label="Decrease quantity">−</button><span>${item.qty}</span><button data-qty="${esc(item.id)}" data-delta="1" aria-label="Increase quantity" ${item.qty >= (products.find(product => product.id === item.id)?.stock || 0) ? 'disabled' : ''}>+</button><button class="remove-item" data-remove="${esc(item.id)}" aria-label="Remove item">Remove</button></div></div><div class="cart-item-price">${money(item.price * item.qty)}</div></div>`).join('') : '<div class="empty-cart"><div><span class="empty-symbol">＋</span>Your sale is waiting.<br>Add a product to get started.</div></div>';
+ const totals = getTotals();
+ document.getElementById('total').textContent = money(totals.total);
+ document.getElementById('checkout').textContent = `Charge ${money(totals.total)}`;
+ document.getElementById('checkout').disabled = count === 0;
+ document.getElementById('orders-today').textContent = orders.filter(order => new Date(order.time).toDateString() === new Date().toDateString()).length;
+ document.getElementById('sales-today').textContent = money(orders.filter(order => new Date(order.time).toDateString() === new Date().toDateString()).reduce((sum, order) => sum + order.total, 0));
+ document.getElementById('stock-count').textContent = products.reduce((sum, product) => sum + product.stock, 0);
+ persist();
+}
+function renderInventory() {
+ const query = (document.getElementById('inventory-search').value || '').trim().toLowerCase();
+ const hideSoldOut = document.getElementById('hide-sold-out').checked;
+ const categoryFilter = document.getElementById('inventory-category');
+ const selectedCategory = categoryFilter.value || 'All';
+ const categories = [...new Set(products.map(product => product.category).filter(Boolean))].sort((left, right) => left.localeCompare(right));
+ categoryFilter.replaceChildren(new Option('All categories','All'),...categories.map(category => new Option(category,category)));
+ categoryFilter.value = categories.includes(selectedCategory) ? selectedCategory : 'All';
+ const shown = products.filter(product => (!hideSoldOut || product.stock > 0) && (categoryFilter.value === 'All' || product.category === categoryFilter.value) && (product.name + ' ' + product.category + ' ' + (product.subcategory || '') + ' ' + product.sku).toLowerCase().includes(query)).sort((left, right) => {
+  if (inventorySort.key === 'cost') {
+   const leftMissing = left.cost == null || left.cost === '';
+   const rightMissing = right.cost == null || right.cost === '';
+   if (leftMissing !== rightMissing) return leftMissing ? 1 : -1;
+   if (leftMissing) return 0;
+  }
+  const comparison = inventorySort.key === 'name'
+   ? left.name.localeCompare(right.name, undefined, {numeric:true,sensitivity:'base'})
+   : Number(left[inventorySort.key]) - Number(right[inventorySort.key]);
+  return inventorySort.direction === 'asc' ? comparison : -comparison;
+ });
+ document.getElementById('inventory-body').innerHTML = shown.length ? shown.map(product => `<tr class="inventory-row" data-product-details="${esc(product.id)}" tabindex="0" role="button" aria-label="View details for ${esc(product.name)}"><td><div class="table-product"><span class="mini-art ${colorFor(product)}">${product.image ? `<img class="mini-product-image" src="${esc(product.image)}" alt="">` : esc(product.mark || 'TCG')}</span><span class="inventory-product-cell"><span class="inventory-name">${esc(product.name)}</span><span class="inventory-subtitle">${esc(product.category)}${product.subcategory && product.subcategory !== 'Unspecified' ? ` · ${esc(product.subcategory)}` : ''} · ${esc(product.sku)}${product.isPreorder ? ` · Pre-order · ETA ${esc(formatDate(product.expectedArrivalDate))}` : ''}</span></span></div></td><td>${money(product.price)}</td><td>${product.cost == null || product.cost === '' ? 'Not set' : money(product.cost)}</td><td><span class="badge ${product.stock <= 3 ? 'low' : ''}">${product.stock <= 0 ? 'Out' : product.stock}</span></td></tr>`).join('') : '<tr><td colspan="4" class="orders-empty">No products match the current filters.</td></tr>';
+ document.querySelectorAll('[data-inventory-sort]').forEach(button => {
+  const active = button.dataset.inventorySort === inventorySort.key;
+  const direction = active ? inventorySort.direction : 'asc';
+  button.setAttribute('aria-label', `Sort by ${button.dataset.sortLabel}, ${direction === 'asc' ? 'ascending' : 'descending'}`);
+  button.querySelector('.inventory-sort-indicator').textContent = active ? (direction === 'asc' ? '↑' : '↓') : '↕';
+  button.closest('th').setAttribute('aria-sort', active ? (direction === 'asc' ? 'ascending' : 'descending') : 'none');
+ });
+}
+function showInventoryDetails(productId) {
+ const product = products.find(item => item.id === productId);
+ if (!product) return;
+ document.getElementById('inventory-detail-title').textContent = product.name;
+ document.getElementById('inventory-detail-subtitle').textContent = `${product.category}${product.subcategory && product.subcategory !== 'Unspecified' ? ` · ${product.subcategory}` : ''} · ${product.sku || 'No SKU'}`;
+ document.getElementById('inventory-detail-art').className = `inventory-detail-art ${colorFor(product)}`;
+ document.getElementById('inventory-detail-art').innerHTML = product.image ? `<img class="inventory-detail-image" src="${esc(product.image)}" alt="${esc(product.name)}">` : `${esc(product.mark || 'TCG')} · ${esc(product.category)}`;
+ document.getElementById('inventory-detail-grid').innerHTML = `<div class="order-meta-cell"><span class="order-meta-label">Selling price</span><span class="order-meta-value">${money(product.price)}</span></div><div class="order-meta-cell"><span class="order-meta-label">Cost you paid</span><span class="order-meta-value">${product.cost == null || product.cost === '' ? 'Not set' : money(product.cost)}</span></div><div class="order-meta-cell"><span class="order-meta-label">Stock status</span><span class="order-meta-value">${product.stock <= 0 ? 'Out of stock' : product.stock <= 3 ? 'Low stock' : 'In stock'}</span></div><div class="order-meta-cell"><span class="order-meta-label">Availability</span><span class="order-meta-value">${product.isPreorder ? `Pre-order · arrives ${formatDate(product.expectedArrivalDate)}` : 'Regular stock'}</span></div>`;
+ const description = document.getElementById('inventory-detail-description');
+ description.textContent = product.description || 'No description added.';
+ description.hidden = !product.description;
+ document.getElementById('inventory-detail-stock').textContent = `${product.stock} on hand`;
+ document.getElementById('inventory-detail-edit').dataset.productId = product.id;
+ document.getElementById('inventory-detail-modal').dataset.productId = product.id;
+ document.getElementById('inventory-detail-actions').hidden = false;
+ document.getElementById('delete-confirmation').hidden = true;
+ openModal('inventory-detail-modal');
+}
+function renderOrders() {
+ const body = document.getElementById('orders-body');
+ const selectedChannel = document.getElementById('order-channel-filter').value;
+ const filteredOrders = selectedChannel === 'All channels' ? orders : orders.filter(order => (order.channel || 'Physical store') === selectedChannel);
+ body.innerHTML = filteredOrders.length ? [...filteredOrders].reverse().map(order => { const count = order.items.reduce((sum, item) => sum + item.qty, 0); const index = orders.indexOf(order); return `<tr><td><button class="order-link" data-order-index="${index}" aria-label="View order ${esc(order.receipt)}">${esc(order.receipt)}</button></td><td>${new Date(order.time).toLocaleString()}</td><td>${esc(order.seller || 'Not recorded')}</td><td>${count} ${count === 1 ? 'item' : 'items'}</td><td>${esc(order.channel || 'Physical store')}</td><td>${esc(order.payment || 'Not recorded')}</td><td><strong>${money(order.total)}</strong></td></tr>`; }).join('') : `<tr><td colspan="7" class="orders-empty">${orders.length ? 'No sales for this channel yet.' : 'No sales yet. Completed sales will appear here.'}</td></tr>`;
+}
+function showOrderDetails(index) {
+ const order = orders[index];
+ if (!order) return;
+ document.getElementById('order-detail-title').textContent = `Receipt ${order.receipt}`;
+ document.getElementById('order-detail-date').textContent = new Date(order.time).toLocaleString();
+ document.getElementById('order-detail-meta').innerHTML = `<div class="order-meta-cell"><span class="order-meta-label">Sales channel</span><span class="order-meta-value">${esc(order.channel || 'Physical store')}</span></div><div class="order-meta-cell"><span class="order-meta-label">Payment method</span><span class="order-meta-value">${esc(order.payment || 'Not recorded')}</span></div><div class="order-meta-cell"><span class="order-meta-label">Sold by</span><span class="order-meta-value">${esc(order.seller || 'Not recorded')}</span></div>`;
+ document.getElementById('order-detail-items').innerHTML = order.items.map(item => { const product = products.find(entry => entry.id === item.id); const category = item.category || product?.category || 'TCG product'; const subcategory = item.subcategory || product?.subcategory; const sku = item.sku || product?.sku || 'SKU not recorded'; const itemType = subcategory && subcategory !== 'Unspecified' ? ` · ${subcategory}` : ''; return `<tr><td><div class="order-line-title">${esc(item.name)}</div><div class="order-line-meta">${esc(category)}${esc(itemType)} · ${esc(sku)}</div></td><td class="order-qty">${item.qty}</td><td class="order-unit">${money(item.price)}</td><td class="order-line-total">${money(item.price * item.qty)}</td></tr>`; }).join('');
+ document.getElementById('detail-total').textContent = money(order.total);
+ openModal('order-detail-modal');
+}
+function persistReservations() { localStorage.setItem('mole-reservations',JSON.stringify(reservations)); }
+const getReservationBalance = reservation => Math.max(0,Math.round((reservation.total-reservation.amountPaid)*100)/100);
+function renderReservations() {
+ const body=document.getElementById('reservations-body');
+ const sorted=[...reservations].sort((left,right)=>right.createdAt.localeCompare(left.createdAt));
+ body.innerHTML=sorted.length?sorted.map(reservation=>{const item=reservation.items[0];return `<tr><td><button class="order-link" data-reservation-id="${esc(reservation.id)}">${esc(reservation.id)}</button></td><td>${esc(reservation.customer)}</td><td>${esc(item.name)}</td><td>${item.quantity}</td><td>${new Date(`${reservation.expectedArrival}T12:00:00`).toLocaleDateString('es-MX')}</td><td>${money(reservation.amountPaid)}</td><td>${money(getReservationBalance(reservation))}</td><td><span class="badge reservation-state ${reservation.status==='Awaiting arrival'?'low':''}">${esc(reservation.status)}</span></td></tr>`;}).join(''):'<tr><td colspan="8" class="orders-empty">No reservations yet.</td></tr>';
+}
+function renderReservationProducts(selectedId='') {
+ const select=document.getElementById('reservation-product');
+ const preorderProducts=products.filter(product=>product.isPreorder);
+ select.replaceChildren(new Option(preorderProducts.length?'Select a pre-order product':'No pre-order products available',''),...preorderProducts.map(product=>new Option(`${product.name} · ${product.category}${product.subcategory&&product.subcategory!=='Unspecified'?` · ${product.subcategory}`:''} · ETA ${formatDate(product.expectedArrivalDate)} · ${money(product.price)} · ${product.stock} in stock`,product.id)));
+ select.disabled=preorderProducts.length===0;
+ if(preorderProducts.some(product=>product.id===selectedId))select.value=selectedId;
+}
+function showReservationDetails(reservationId) {
+ const reservation=reservations.find(item=>item.id===reservationId);
+ if(!reservation)return;
+ const item=reservation.items[0];
+ document.getElementById('reservation-detail-title').textContent=`Reservation ${reservation.id}`;
+ document.getElementById('reservation-detail-created').textContent=`Created ${new Date(reservation.createdAt).toLocaleString()} · ${reservation.createdBy}`;
+ document.getElementById('reservation-detail-meta').innerHTML=`<div class="order-meta-cell"><span class="order-meta-label">Customer</span><span class="order-meta-value">${esc(reservation.customer)}</span></div><div class="order-meta-cell"><span class="order-meta-label">Contact</span><span class="order-meta-value">${esc(reservation.contact||'Not provided')}</span></div><div class="order-meta-cell"><span class="order-meta-label">Expected arrival</span><span class="order-meta-value">${new Date(`${reservation.expectedArrival}T12:00:00`).toLocaleDateString('es-MX')}</span></div><div class="order-meta-cell"><span class="order-meta-label">Status</span><span class="order-meta-value">${esc(reservation.status)}</span></div>`;
+ document.getElementById('reservation-detail-item').innerHTML=`<div class="order-line-title">${esc(item.name)}</div><div class="order-line-meta">${esc(item.category)}${item.subcategory&&item.subcategory!=='Unspecified'?` · ${esc(item.subcategory)}`:''} · ${esc(item.sku||'No SKU')} · ${item.quantity} × ${money(item.unitPrice)}</div>${reservation.notes?`<div class="reservation-note">${esc(reservation.notes)}</div>`:''}`;
+ document.getElementById('reservation-detail-total').textContent=money(reservation.total);
+ document.getElementById('reservation-detail-paid').textContent=money(reservation.amountPaid);
+ document.getElementById('reservation-detail-balance').textContent=money(getReservationBalance(reservation));
+ document.getElementById('reservation-detail-actions').hidden=reservation.status!=='Awaiting arrival';
+ document.getElementById('reservation-detail-modal').dataset.reservationId=reservation.id;
+ openModal('reservation-detail-modal');
+}
+function salesDateKey(timestamp) {
+ const date = new Date(timestamp);
+ if (Number.isNaN(date.getTime())) return '';
+ return `${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,'0')}-${String(date.getDate()).padStart(2,'0')}`;
+}
+function getSalesCategories(filteredOrders) {
+ return [...new Set(filteredOrders.flatMap(order => order.items.map(item => item.category || products.find(product => product.id === item.id)?.category || 'Uncategorized')))].sort((left,right)=>left.localeCompare(right));
+}
+function renderSalesCategoryFilters(filteredOrders) {
+ const categories = getSalesCategories(filteredOrders);
+ const filters = document.getElementById('sales-category-filters');
+ if (!categories.length) {
+  filters.innerHTML = '<span class="sales-cost-note">No product categories in the selected date range and user.</span>';
+  return;
+ }
+ const allSelected = selectedSalesCategories === null || categories.every(category => selectedSalesCategories.has(category));
+ filters.innerHTML = `<label class="sales-category-option"><input id="sales-category-all" type="checkbox" ${allSelected?'checked':''}> All categories</label>${categories.map((category,index)=>`<label class="sales-category-option"><input type="checkbox" data-sales-category="${esc(category)}" ${selectedSalesCategories===null||selectedSalesCategories.has(category)?'checked':''}><span class="sales-legend-swatch" style="background:${['#286044','#4779a8','#d2a248','#9a5d86','#438f91','#bd5b47','#758b48','#7562a3'][index%8]}"></span>${esc(category)}</label>`).join('')}`;
+}
+function renderSalesCategoryChart(filteredOrders) {
+ const chart = document.getElementById('sales-category-chart');
+ const legend = document.getElementById('sales-category-legend');
+ const categories = getSalesCategories(filteredOrders).filter(category => selectedSalesCategories === null || selectedSalesCategories.has(category));
+ if (!categories.length) {
+  chart.innerHTML = `<div class="sales-empty">${filteredOrders.length?'Select at least one category to display its sales.':'No completed sales in this date range and user.'}</div>`;
+  legend.innerHTML = '';
+  return;
+ }
+ const totalsByDate = new Map();
+ filteredOrders.forEach(order => {
+  const date = salesDateKey(order.time);
+  if (!totalsByDate.has(date)) totalsByDate.set(date,new Map());
+  const dailyTotals = totalsByDate.get(date);
+  order.items.forEach(item => {
+   const category = item.category || products.find(product => product.id === item.id)?.category || 'Uncategorized';
+   if (!categories.includes(category)) return;
+   dailyTotals.set(category,(dailyTotals.get(category)||0)+Number(item.price||0)*Number(item.qty||0));
+  });
+ });
+ const groups = [...totalsByDate].sort(([left],[right])=>left.localeCompare(right)).map(([date,values])=>({date,label:new Date(`${date}T12:00:00`).toLocaleDateString('es-MX',{day:'2-digit',month:'short'}),fullLabel:new Date(`${date}T12:00:00`).toLocaleDateString('es-MX',{year:'numeric',month:'long',day:'numeric'}),values}));
+ if (!groups.length) {
+  chart.innerHTML = '<div class="sales-empty">No categorized sales to display.</div>';
+  legend.innerHTML = '';
+  return;
+ }
+ const colors = ['#286044','#4779a8','#d2a248','#9a5d86','#438f91','#bd5b47','#758b48','#7562a3'];
+ const categoryColors = new Map(categories.map((category,index)=>[category,colors[index%colors.length]]));
+ const maxValue = Math.max(1,...groups.flatMap(group=>categories.map(category=>group.values.get(category)||0)));
+ const width=960,height=360,left=78,top=20,plotWidth=858,plotHeight=270,base=top+plotHeight;
+ const tickValues=Array.from({length:5},(_,index)=>maxValue*index/4);
+ let svg=`<svg class="sales-chart" viewBox="0 0 ${width} ${height}" role="img" aria-label="Daily sales by selected product category in MXN">`;
+ tickValues.forEach(value=>{const y=base-(value/maxValue)*plotHeight;svg+=`<line class="sales-grid-line" x1="${left}" y1="${y}" x2="${left+plotWidth}" y2="${y}"/><text class="sales-axis-label" x="${left-9}" y="${y+3}" text-anchor="end">${esc(money(value))}</text>`;});
+ const slot=plotWidth/groups.length;
+ const groupWidth=Math.min(slot*.82,72);
+ const barWidth=Math.max(2,groupWidth/categories.length);
+ const labelEvery=Math.max(1,Math.ceil(groups.length/14));
+ groups.forEach((group,index)=>{
+  const center=left+slot*index+slot/2;
+  categories.forEach((category,categoryIndex)=>{
+   const value=group.values.get(category)||0;
+   if(!value)return;
+   const x=center-groupWidth/2+categoryIndex*barWidth;
+   const barHeight=(value/maxValue)*plotHeight;
+   const color=categoryColors.get(category);
+   svg+=`<rect x="${x}" y="${base-barHeight}" width="${Math.max(1,barWidth-2)}" height="${barHeight}" rx="2" fill="${color}"><title>${esc(group.fullLabel)} · ${esc(category)} · ${esc(money(value))}</title></rect>`;
+  });
+  if(index%labelEvery===0||index===groups.length-1)svg+=`<text class="sales-x-label" x="${center}" y="${base+19}" text-anchor="middle">${esc(group.label)}</text>`;
+ });
+ svg+='</svg>';
+ chart.innerHTML=svg;
+ legend.innerHTML=categories.map(category=>`<span class="sales-legend-item"><span class="sales-legend-swatch" style="background:${categoryColors.get(category)}"></span>${esc(category)}</span>`).join('');
+}
+function renderSalesReport() {
+ const startDate = document.getElementById('sales-from').value;
+ const endDate = document.getElementById('sales-to').value;
+ const userSelect = document.getElementById('sales-user');
+ const selectedUser = userSelect.value || 'all';
+ const userNamesInData = [...new Set([...accounts.map(account=>account.username),...orders.map(order=>order.seller || 'Not recorded')])].filter(Boolean).sort((a,b)=>a.localeCompare(b));
+ userSelect.replaceChildren(new Option('All users','all'),...userNamesInData.map(username=>new Option(username,`user:${username}`)));
+ userSelect.value = userNamesInData.some(username=>`user:${username}`===selectedUser) ? selectedUser : 'all';
+ const selectedUsername = userSelect.value === 'all' ? null : userSelect.value.slice(5);
+ const filteredOrders = orders.filter(order => {
+  const dateKey = salesDateKey(order.time);
+  const orderUser = order.seller || 'Not recorded';
+  return dateKey && (!startDate || dateKey >= startDate) && (!endDate || dateKey <= endDate) && (!selectedUsername || orderUser === selectedUsername);
+ });
+ renderSalesCategoryFilters(filteredOrders);
+ renderSalesCategoryChart(filteredOrders);
+ const salesTotal = filteredOrders.reduce((sum, order) => sum + Number(order.total || 0),0);
+ let costTotal = 0;
+ let missingCostItems = 0;
+ document.getElementById('sales-range-total').textContent = money(salesTotal);
+ document.getElementById('sales-range-count').textContent = filteredOrders.length;
+ const chart = document.getElementById('sales-chart');
+ const legend = document.getElementById('sales-legend');
+ if (!filteredOrders.length) {
+  document.getElementById('sales-range-cost').textContent = money(0);
+  document.getElementById('sales-range-profit').textContent = money(0);
+  document.getElementById('sales-cost-note').textContent = 'Gross profit is sales minus recorded item costs; platform fees are not included.';
+  chart.innerHTML = '<div class="sales-empty">No completed sales in this date range.</div>';
+  legend.innerHTML = '';
+  return;
+ }
+ const totalsByDate = new Map();
+ filteredOrders.forEach(order => {
+  const date = salesDateKey(order.time);
+  if (!totalsByDate.has(date)) totalsByDate.set(date,{sales:0,cost:0,missingCostItems:0});
+  const day = totalsByDate.get(date);
+  day.sales += Number(order.total || 0);
+  order.items.forEach(item => {
+   const quantity = Number(item.qty || 0);
+   if (typeof item.cost === 'number' && Number.isFinite(item.cost) && item.cost >= 0) {
+    const itemCost = item.cost * quantity;
+    day.cost += itemCost;
+    costTotal += itemCost;
+   } else {
+    day.missingCostItems += quantity;
+    missingCostItems += quantity;
+   }
+  });
+ });
+ const profit = missingCostItems ? null : salesTotal - costTotal;
+ document.getElementById('sales-range-cost').textContent = money(costTotal);
+ document.getElementById('sales-range-profit').textContent = profit === null ? 'Incomplete' : money(profit);
+ document.getElementById('sales-cost-note').textContent = missingCostItems ? `Cost and profit are incomplete: ${missingCostItems} sold item(s) have no saved purchase cost.` : 'Gross profit is sales minus recorded item costs; platform fees are not included.';
+ const groups = [...totalsByDate].sort(([a],[b])=>a.localeCompare(b)).map(([date,values])=>({label:new Date(`${date}T12:00:00`).toLocaleDateString('es-MX',{day:'2-digit',month:'short'}),fullLabel:new Date(`${date}T12:00:00`).toLocaleDateString('es-MX',{year:'numeric',month:'long',day:'numeric'}),...values}));
+ const salesColor = '#286044';
+ const costColor = '#d2a248';
+ const maxValue = Math.max(1,...groups.flatMap(group=>[group.sales,group.cost]));
+ const width=960, height=360, left=78, top=20, plotWidth=858, plotHeight=270, base=top+plotHeight;
+ const tickValues=Array.from({length:5},(_,index)=>maxValue*index/4);
+ let svg=`<svg class="sales-chart" viewBox="0 0 ${width} ${height}" role="img" aria-label="Daily sales and product costs in MXN">`;
+ tickValues.forEach(value=>{const y=base-(value/maxValue)*plotHeight;svg+=`<line class="sales-grid-line" x1="${left}" y1="${y}" x2="${left+plotWidth}" y2="${y}"/><text class="sales-axis-label" x="${left-9}" y="${y+3}" text-anchor="end">${esc(money(value))}</text>`;});
+ const slot=plotWidth/groups.length;
+ const barWidth=Math.max(3,Math.min(42,slot*.66));
+ const labelEvery=Math.max(1,Math.ceil(groups.length/14));
+ groups.forEach((group,index)=>{
+  const center=left+slot*index+slot/2;
+  const gap=Math.max(2,slot*.04);
+  const salesX=center-barWidth-gap/2;
+  const costX=center+gap/2;
+  const salesHeight=(group.sales/maxValue)*plotHeight;
+  const costHeight=(group.cost/maxValue)*plotHeight;
+  svg+=`<rect x="${salesX}" y="${base-salesHeight}" width="${barWidth}" height="${salesHeight}" rx="2" fill="${salesColor}"><title>${esc(group.fullLabel)} · Sales · ${esc(money(group.sales))}</title></rect>`;
+  if(group.cost>0)svg+=`<rect x="${costX}" y="${base-costHeight}" width="${barWidth}" height="${costHeight}" rx="2" fill="${costColor}"><title>${esc(group.fullLabel)} · Recorded product cost · ${esc(money(group.cost))}${group.missingCostItems?` · ${group.missingCostItems} item(s) missing cost`:''}</title></rect>`;
+  if(index%labelEvery===0||index===groups.length-1)svg+=`<text class="sales-x-label" x="${center}" y="${base+19}" text-anchor="middle">${esc(group.label)}</text>`;
+ });
+ svg+='</svg>';
+ chart.innerHTML=svg;
+ legend.innerHTML=`<span class="sales-legend-item"><span class="sales-legend-swatch" style="background:${salesColor}"></span>Sales</span><span class="sales-legend-item"><span class="sales-legend-swatch" style="background:${costColor}"></span>Product cost</span>`;
+}
+function goTo(page) {
+ if (page === 'accounts' && activeAccount?.role !== 'primary') page = 'pos';
+ const labels = {pos:['Sales floor','Point of sale'],inventory:['Stockroom','Inventory'],orders:['Sales record','Orders'],reservations:['Pre-orders','Reservations'],sales:['Reports','Sales report'],activity:['History','Activity log'],accounts:['Administration','Team accounts']};
+ if (!labels[page]) return;
+ currentPage = page;
+ document.querySelectorAll('.nav button').forEach(button => button.classList.toggle('active', button.dataset.page === page));
+ document.querySelectorAll('.workspace').forEach(section => section.classList.toggle('active', section.id === `page-${page}`));
+ document.getElementById('crumb').textContent = labels[page][0]; document.getElementById('page-title').textContent = labels[page][1];
+ if (page === 'inventory') renderInventory(); if (page === 'orders') renderOrders(); if (page === 'reservations') renderReservations(); if (page === 'sales') renderSalesReport(); if (page === 'activity') renderActivity(); if (page === 'accounts') renderAccounts();
+}
+document.querySelectorAll('.nav button').forEach(button => button.addEventListener('click', () => goTo(button.dataset.page)));
+document.getElementById('filters').addEventListener('click', event => { const button = event.target.closest('[data-filter]'); if (!button) return; activeCategory = button.dataset.filter; document.querySelectorAll('.filter').forEach(filter => filter.classList.toggle('active', filter === button)); renderProducts(); });
+document.getElementById('search').addEventListener('input', renderProducts);
+document.getElementById('inventory-search').addEventListener('input', renderInventory);
+document.getElementById('inventory-category').addEventListener('change', renderInventory);
+document.getElementById('hide-sold-out').addEventListener('change', renderInventory);
+document.querySelector('.inventory-table thead').addEventListener('click', event => {
+ const button = event.target.closest('[data-inventory-sort]');
+ if (!button) return;
+ const key = button.dataset.inventorySort;
+ if (inventorySort.key === key) inventorySort.direction = inventorySort.direction === 'asc' ? 'desc' : 'asc';
+ else inventorySort = {key,direction:'asc'};
+ renderInventory();
+});
+document.getElementById('order-channel-filter').addEventListener('change', renderOrders);
+document.getElementById('sales-user').addEventListener('change', renderSalesReport);
+document.getElementById('sales-from').addEventListener('change', renderSalesReport);
+document.getElementById('sales-to').addEventListener('change', renderSalesReport);
+document.getElementById('sales-category-filters').addEventListener('change', event => {
+ if (event.target.id === 'sales-category-all') {
+  selectedSalesCategories = event.target.checked ? null : new Set();
+ } else if (event.target.matches('[data-sales-category]')) {
+  const categoryInputs = [...document.querySelectorAll('#sales-category-filters [data-sales-category]')];
+  const checkedCategories = new Set(categoryInputs.filter(input=>input.checked).map(input=>input.dataset.salesCategory));
+  selectedSalesCategories = checkedCategories.size === categoryInputs.length ? null : checkedCategories;
+ } else return;
+ renderSalesReport();
+});
+document.getElementById('orders-body').addEventListener('click', event => { const button = event.target.closest('[data-order-index]'); if (button) showOrderDetails(Number(button.dataset.orderIndex)); });
+document.getElementById('product-grid').addEventListener('click', event => {
+ const button = event.target.closest('[data-add]');
+ if (!button) return;
+ const product = products.find(item => item.id === button.dataset.add);
+ if (!product || product.stock < 1) return;
+ const item = cart.find(row => row.id === product.id);
+ const previousQuantity = item?.qty || 0;
+ if (item) item.qty++; else cart.push({id:product.id,name:product.name,price:product.price,qty:1});
+ recordActivity('cart_item_added',product.name,`Quantity ${previousQuantity} -> ${previousQuantity + 1}; unit price ${money(product.price)}.`);
+ renderCart();
+});
+document.getElementById('cart-items').addEventListener('click', event => {
+ const qtyButton = event.target.closest('[data-qty]');
+ const removeButton = event.target.closest('[data-remove]');
+ if (qtyButton) {
+  const item = cart.find(row => row.id === qtyButton.dataset.qty);
+  const product = products.find(row => row.id === qtyButton.dataset.qty);
+  if (item) {
+   const previousQuantity = item.qty;
+   item.qty += Number(qtyButton.dataset.delta);
+   if (item.qty <= 0) {
+    cart = cart.filter(row => row !== item);
+    recordActivity('cart_item_removed',item.name,`Removed from sale at quantity ${previousQuantity}.`);
+   } else {
+    if (product && item.qty > product.stock) item.qty = product.stock;
+    recordActivity('cart_quantity_changed',item.name,`Quantity changed from ${previousQuantity} to ${item.qty}.`);
+   }
+  }
+  renderCart();
+ }
+ if (removeButton) {
+  const item = cart.find(row => row.id === removeButton.dataset.remove);
+  if (item) { cart = cart.filter(row => row !== item); recordActivity('cart_item_removed',item.name,`Removed from sale at quantity ${item.qty}.`); }
+  renderCart();
+ }
+});
+document.getElementById('inventory-body').addEventListener('click', event => { const row = event.target.closest('[data-product-details]'); if (row) showInventoryDetails(row.dataset.productDetails); });
+document.getElementById('inventory-body').addEventListener('keydown', event => { const row = event.target.closest('[data-product-details]'); if (!row || !['Enter',' '].includes(event.key)) return; event.preventDefault(); showInventoryDetails(row.dataset.productDetails); });
+const openModal = id => document.getElementById(id).classList.add('open'); const closeModal = el => el.classList.remove('open');
+document.querySelectorAll('[data-close]').forEach(button => button.addEventListener('click', () => closeModal(button.closest('.modal-backdrop'))));
+document.querySelectorAll('.modal-backdrop').forEach(backdrop => backdrop.addEventListener('click', event => { if (event.target === backdrop) closeModal(backdrop); }));
+document.getElementById('add-reservation').addEventListener('click', () => {
+ const form=document.getElementById('reservation-form');
+ form.reset();
+ renderReservationProducts();
+ document.getElementById('reservation-quantity').value='1';
+ document.getElementById('reservation-paid').value='0';
+ document.getElementById('reservation-error').textContent='';
+ const today=new Date(); today.setMinutes(today.getMinutes()-today.getTimezoneOffset());
+ document.getElementById('reservation-arrival').min=today.toISOString().slice(0,10);
+ openModal('reservation-modal');
+});
+const reservationPhone = document.getElementById('reservation-contact');
+document.querySelector('label[for="reservation-contact"]').textContent = 'Phone number';
+reservationPhone.type = 'tel';
+reservationPhone.required = true;
+reservationPhone.inputMode = 'numeric';
+reservationPhone.pattern = '[0-9]{7,15}';
+reservationPhone.maxLength = 15;
+reservationPhone.autocomplete = 'tel';
+reservationPhone.title = 'Enter 7 to 15 digits.';
+reservationPhone.addEventListener('input', event => { event.target.value = event.target.value.replace(/\D/g,'').slice(0,15); });
+document.getElementById('reservation-product').addEventListener('change',event=>{
+ const product=products.find(item=>item.id===event.target.value);
+ if(product){document.getElementById('reservation-unit-price').value=product.price;if(product.isPreorder&&product.expectedArrivalDate)document.getElementById('reservation-arrival').value=product.expectedArrivalDate;}
+});
+document.getElementById('reservation-form').addEventListener('submit',event=>{
+ event.preventDefault();
+ const customer=document.getElementById('reservation-customer').value.trim();
+ const contact=document.getElementById('reservation-contact').value.trim();
+ const product=products.find(item=>item.id===document.getElementById('reservation-product').value);
+ const quantity=Number(document.getElementById('reservation-quantity').value);
+ const unitPrice=Number(document.getElementById('reservation-unit-price').value);
+ const amountPaid=Number(document.getElementById('reservation-paid').value);
+ const expectedArrival=document.getElementById('reservation-arrival').value;
+ const notes=document.getElementById('reservation-notes').value.trim();
+ const error=document.getElementById('reservation-error');
+ if(!customer||!/^\d{7,15}$/.test(contact)||!product||!Number.isInteger(quantity)||quantity<1||!Number.isFinite(unitPrice)||unitPrice<=0||!Number.isFinite(amountPaid)||amountPaid<0||!expectedArrival){error.textContent='Enter a customer name, a 7 to 15 digit phone number, product, price, payment, quantity, and arrival date.';return;}
+ const total=Math.round(unitPrice*quantity*100)/100;
+ if(amountPaid>total){error.textContent='Amount paid cannot exceed the reservation total.';return;}
+ const reservation={id:`R-${Date.now().toString().slice(-7)}`,createdAt:new Date().toISOString(),createdBy:activeAccount?.username||'Unknown',customer,contact,items:[{productId:product.id,name:product.name,category:product.category,subcategory:product.subcategory||'Unspecified',sku:product.sku||'',quantity,unitPrice,cost:product.cost==null||product.cost===''?null:Number(product.cost)}],total,amountPaid,expectedArrival,status:'Awaiting arrival',paymentMethod:amountPaid>0?'Recorded':'Not paid yet',notes};
+ reservations.push(reservation);
+ try{persistReservations();}catch{reservations.pop();error.textContent='Could not save the reservation on this device.';return;}
+ recordActivity('reservation_created',reservation.id,`${customer} reserved ${quantity} × ${product.name}; total ${money(total)}, paid ${money(amountPaid)}, expected ${expectedArrival}.`);
+ renderReservations();
+ closeModal(document.getElementById('reservation-modal'));
+ form.reset();
+ toast('Reservation saved');
+});
+document.getElementById('reservations-body').addEventListener('click',event=>{const button=event.target.closest('[data-reservation-id]');if(button)showReservationDetails(button.dataset.reservationId);});
+document.getElementById('reservation-detail-actions').addEventListener('click',event=>{
+ const reservation=reservations.find(item=>item.id===event.currentTarget.closest('#reservation-detail-modal').dataset.reservationId);
+ if(!reservation||reservation.status!=='Awaiting arrival')return;
+ if(event.target.closest('#cancel-reservation')){
+  reservation.status='Cancelled';
+  reservation.cancelledAt=new Date().toISOString();
+  persistReservations();
+  recordActivity('reservation_cancelled',reservation.id,`Cancelled for ${reservation.customer}; ${money(reservation.amountPaid)} recorded as paid. No refund was recorded.`);
+ }else if(event.target.closest('#mark-reservation-arrived')){
+  reservation.status='Arrived';
+  reservation.arrivedAt=new Date().toISOString();
+  const item=reservation.items[0];
+  const product=products.find(entry=>entry.id===item.productId);
+  if(product){product.stock+=item.quantity;persist();}
+  persistReservations();
+  const arrivalDetails=product?`${item.quantity} × ${item.name} received; inventory stock is now ${product.stock}.`:`${item.quantity} × ${item.name} received; product is no longer active in inventory.`;
+  recordActivity('reservation_arrived',reservation.id,arrivalDetails);
+  if(!product)toast('Reservation marked arrived; add the product to inventory before selling it.');
+ }
+ renderReservations();
+ closeModal(document.getElementById('reservation-detail-modal'));
+ if(reservation.status==='Arrived'&&products.some(product=>product.id===reservation.items[0].productId)){renderInventory();renderProducts();renderCart();}
+});
+document.getElementById('inventory-detail-modal').addEventListener('click', event => {
+ const productId = event.currentTarget.dataset.productId;
+ if (event.target.closest('#inventory-detail-delete')) {
+  document.getElementById('inventory-detail-actions').hidden = true;
+  document.getElementById('delete-confirmation').hidden = false;
+  return;
+ }
+ if (event.target.closest('#cancel-product-delete')) {
+  document.getElementById('delete-confirmation').hidden = true;
+  document.getElementById('inventory-detail-actions').hidden = false;
+  return;
+ }
+ if (event.target.closest('#confirm-product-delete')) {
+  const deletedProduct = products.find(product => product.id === productId);
+  if (!deletedProduct) return;
+  products = products.filter(product => product.id !== productId);
+  cart = cart.filter(item => item.id !== productId);
+  persist();
+  recordActivity('product_deleted',deletedProduct.name,`SKU ${deletedProduct.sku || 'not set'}; remaining stock ${deletedProduct.stock}.`);
+  closeModal(document.getElementById('inventory-detail-modal'));
+  renderInventory(); renderProducts(); renderCart();
+  toast('Product deleted');
+  return;
+ }
+ const stockButton = event.target.closest('[data-detail-stock]');
+ if (stockButton) {
+  const product = products.find(item => item.id === productId);
+  if (!product) return;
+  const previousStock = product.stock;
+  product.stock = Math.max(0, product.stock + Number(stockButton.dataset.detailStock));
+  persist();
+  recordActivity('stock_adjusted',product.name,`Stock changed from ${previousStock} to ${product.stock}.`);
+  renderInventory(); renderProducts(); renderCart(); showInventoryDetails(product.id);
+  return;
+ }
+ if (event.target.closest('#inventory-detail-edit')) {
+  closeModal(document.getElementById('inventory-detail-modal'));
+  openProductEditor(productId);
+ }
+});
+function updatePaymentMethod() {
+ const channel = document.getElementById('sale-channel').value;
+ const payment = document.getElementById('payment-method');
+ const label = document.querySelector('label[for="payment-method"]');
+ const isTikTok = channel === 'TikTok';
+ const methods = channel === 'MercadoLibre'
+  ? ['Link','Transfer']
+  : ['Card','Cash','Transfer','Store credit','Other'];
+ const options = isTikTok
+  ? [new Option('TikTok','TikTok')]
+  : methods.map(method => new Option(method,method));
+ payment.replaceChildren(...options);
+ payment.disabled = isTikTok;
+ label.textContent = isTikTok ? 'Payment platform' : 'Payment method';
+}
+document.getElementById('sale-channel').addEventListener('change', updatePaymentMethod);
+document.getElementById('checkout').addEventListener('click', () => { if (!cart.length) return; const totals = getTotals(); document.getElementById('modal-total').textContent = money(totals.total); document.getElementById('checkout-form').hidden = false; document.getElementById('checkout-success').hidden = true; updatePaymentMethod(); openModal('checkout-modal'); });
+document.getElementById('confirm-sale').addEventListener('click', () => { if (!cart.length) return; const totals = getTotals(); for (const item of cart) { const product = products.find(row => row.id === item.id); if (!product || product.stock < item.qty) { toast(`Not enough stock for ${item.name}`); closeModal(document.getElementById('checkout-modal')); return; } } cart.forEach(item => { products.find(product => product.id === item.id).stock -= item.qty; }); const channel = document.getElementById('sale-channel').value; const order = {receipt:'M-' + Date.now().toString().slice(-7),time:new Date().toISOString(),items:cart.map(item => { const product = products.find(entry => entry.id === item.id); return {...item,sku:product?.sku || '',category:product?.category || '',subcategory:product?.subcategory || 'Unspecified',cost:product?.cost == null || product.cost === '' ? null : Number(product.cost)}; }),channel,payment:channel === 'TikTok' ? channel : document.getElementById('payment-method').value,seller:activeAccount?.username || '',...totals}; orders.push(order); lastCompletedOrder = order; cart = []; persist(); recordActivity('sale_completed',order.receipt,`${order.items.map(item=>`${item.qty} × ${item.name}`).join(', ')}; ${order.channel}; ${order.payment}; total ${money(order.total)}.`); renderProducts(); renderCart(); document.getElementById('success-receipt').textContent = `${order.receipt} · ${order.channel} · ${order.payment} · ${money(order.total)}`; document.getElementById('checkout-form').hidden = true; document.getElementById('checkout-success').hidden = false; });
+document.getElementById('print-receipt').addEventListener('click', () => printReceipt(lastCompletedOrder));
+document.getElementById('new-sale').addEventListener('click', () => closeModal(document.getElementById('checkout-modal')));
+function setProductPreorderEnabled(enabled) {
+ document.getElementById('product-arrival-wrap').hidden = !enabled;
+ document.getElementById('new-product-arrival').required = enabled;
+ if (!enabled) document.getElementById('new-product-arrival').value = '';
+}
+function resetProductEditor() { document.getElementById('product-form').reset(); document.getElementById('new-stock').value = '1'; setProductPreorderEnabled(false); populateProductSubcategories(document.getElementById('new-category').value); document.getElementById('product-image').value = ''; document.getElementById('image-preview-wrap').hidden = true; document.getElementById('image-preview').removeAttribute('src'); editingProductId = null; pendingImage = null; removeProductImage = false; }
+function openProductEditor(productId = null) {
+ resetProductEditor(); editingProductId = productId;
+ const product = products.find(item => item.id === productId);
+ document.getElementById('product-modal-title').textContent = product ? 'Edit product' : 'Add a product';
+ document.getElementById('product-modal-subtitle').textContent = product ? 'Update product details and image.' : 'Add an item to your local stock list.';
+ document.getElementById('save-product').textContent = product ? 'Save changes' : 'Add to inventory';
+ if (product) {
+  document.getElementById('new-name').value = product.name;
+  document.getElementById('new-category').value = product.category;
+  populateProductSubcategories(product.category,product.subcategory || 'Unspecified');
+  document.getElementById('new-is-preorder').checked = Boolean(product.isPreorder);
+  document.getElementById('new-product-arrival').value = product.expectedArrivalDate || '';
+  setProductPreorderEnabled(Boolean(product.isPreorder));
+  document.getElementById('new-sku').value = product.sku || '';
+  document.getElementById('new-price').value = product.price;
+  document.getElementById('new-cost').value = product.cost ?? '';
+  document.getElementById('new-description').value = product.description || '';
+  document.getElementById('new-stock').value = product.stock;
+  pendingImage = product.image || null;
+  if (pendingImage) { document.getElementById('image-preview').src = pendingImage; document.getElementById('image-preview-wrap').hidden = false; }
+ }
+ openModal('product-modal');
+}
+async function compressProductImage(file) { if (!file.type.startsWith('image/')) throw new Error('Choose an image file.'); if (file.size > 15 * 1024 * 1024) throw new Error('Choose an image smaller than 15 MB.'); const bitmap = await createImageBitmap(file); const scale = Math.min(1, 640 / Math.max(bitmap.width, bitmap.height)); const canvas = document.createElement('canvas'); canvas.width = Math.max(1, Math.round(bitmap.width * scale)); canvas.height = Math.max(1, Math.round(bitmap.height * scale)); const context = canvas.getContext('2d'); context.fillStyle = '#ffffff'; context.fillRect(0, 0, canvas.width, canvas.height); context.drawImage(bitmap, 0, 0, canvas.width, canvas.height); bitmap.close(); return canvas.toDataURL('image/jpeg', 0.8); }
+document.getElementById('add-product').addEventListener('click', () => openProductEditor());
+document.getElementById('product-form').insertBefore(document.getElementById('product-subcategory-template').content,document.querySelector('label[for="new-sku"]'));
+document.getElementById('new-category').addEventListener('change',event=>populateProductSubcategories(event.target.value));
+document.getElementById('product-form').insertBefore(document.getElementById('product-description-template').content, document.querySelector('label[for="product-image"]'));
+document.getElementById('product-form').insertBefore(document.getElementById('product-preorder-template').content,document.querySelector('label[for="product-image"]'));
+document.getElementById('new-is-preorder').addEventListener('change',event=>setProductPreorderEnabled(event.target.checked));
+document.getElementById('product-image').addEventListener('change', async event => { const file = event.target.files[0]; if (!file) return; try { pendingImage = await compressProductImage(file); removeProductImage = false; document.getElementById('image-preview').src = pendingImage; document.getElementById('image-preview-wrap').hidden = false; } catch (error) { event.target.value = ''; toast(error.message || 'Could not load this image.'); } });
+document.getElementById('remove-image').addEventListener('click', () => { pendingImage = null; removeProductImage = true; document.getElementById('product-image').value = ''; document.getElementById('image-preview-wrap').hidden = true; document.getElementById('image-preview').removeAttribute('src'); });
+document.getElementById('product-form').addEventListener('submit', event => {
+ event.preventDefault();
+ const name = document.getElementById('new-name').value.trim();
+ const category = document.getElementById('new-category').value;
+ const price = Number(document.getElementById('new-price').value);
+ const costInput = document.getElementById('new-cost').value.trim();
+ const cost = costInput === '' ? null : Number(costInput);
+ const stock = Number(document.getElementById('new-stock').value);
+ const isPreorder = document.getElementById('new-is-preorder').checked;
+ const expectedArrivalDate = document.getElementById('new-product-arrival').value;
+ if (!name || !Number.isFinite(price) || price <= 0 || (cost !== null && (!Number.isFinite(cost) || cost < 0)) || !Number.isInteger(stock) || stock < 0) return;
+ if (isPreorder && !expectedArrivalDate) { document.getElementById('new-product-arrival').reportValidity(); return; }
+ const existing = products.find(item => item.id === editingProductId);
+ const original = existing ? {...existing} : null;
+ const prefix = category.slice(0,3).toUpperCase().replace(/[^A-Z]/g,'X');
+ const id = existing ? existing.id : 'custom-' + Date.now();
+ const updated = {...(existing || {}),id,name,category,subcategory:document.getElementById('new-subcategory').value,isPreorder,expectedArrivalDate:isPreorder?expectedArrivalDate:'',price,cost,stock,description:document.getElementById('new-description').value.trim(),sku:document.getElementById('new-sku').value.trim() || (existing?.sku || `${prefix}-${id.slice(-6).toUpperCase()}`),art:category === 'Single cards' ? 'single' : category === 'Accessories' ? 'accessory' : category === 'Food & Drinks' ? 'food-drinks' : category.toLowerCase().replace(/[^a-z]/g,''),tag:category,mark:prefix};
+ if (pendingImage) updated.image = pendingImage;
+ else if (removeProductImage) delete updated.image;
+ if (existing) {
+  Object.assign(existing, updated);
+  if (removeProductImage) delete existing.image;
+ } else products.push(updated);
+ try { persist(); } catch {
+  if (existing) {
+   Object.assign(existing, original);
+   if (!('image' in original)) delete existing.image;
+  } else products = products.filter(item => item.id !== id);
+  toast('Could not save product. Check available device storage.');
+  return;
+ }
+ if (existing) cart.filter(item => item.id === id).forEach(item => { item.name = name; item.price = price; });
+ if (existing) {
+  const fields = [['name','Name'],['category','Category'],['subcategory','Item type'],['isPreorder','Pre-order status'],['expectedArrivalDate','Expected arrival'],['sku','SKU'],['price','Price'],['cost','Cost'],['stock','Stock'],['description','Description'],['image','Image']];
+  const changes = fields.filter(([key]) => (original[key] ?? null) !== (updated[key] ?? null)).map(([key,label]) => {
+   if (key === 'image') return `${label} changed`;
+   const before = original[key] ?? 'not set';
+   const after = updated[key] ?? 'not set';
+   const format = value => key === 'price' || key === 'cost' ? (value === 'not set' ? value : money(value)) : String(value).slice(0,50);
+   return `${label}: ${format(before)} -> ${format(after)}`;
+  });
+  if (changes.length) recordActivity('product_updated',name,changes.join('; '));
+ } else recordActivity('product_created',name,`Category ${category}; type ${updated.subcategory}; ${isPreorder?`pre-order, expected ${expectedArrivalDate}`:'regular stock'}; SKU ${updated.sku}; price ${money(price)}; cost ${cost == null ? 'not set' : money(cost)}; stock ${stock}.`);
+ renderInventory(); renderProducts(); renderCart(); closeModal(document.getElementById('product-modal')); resetProductEditor(); toast(existing ? 'Product updated' : 'Product added to inventory');
+});
+function encodeBytes(bytes) { return btoa(Array.from(bytes, byte => String.fromCharCode(byte)).join('')); }
+function decodeBytes(value) { return Uint8Array.from(atob(value), character => character.charCodeAt(0)); }
+async function hashPassword(password, salt) { const key = await crypto.subtle.importKey('raw', new TextEncoder().encode(password), 'PBKDF2', false, ['deriveBits']); const bits = await crypto.subtle.deriveBits({name:'PBKDF2',salt,iterations:150000,hash:'SHA-256'},key,256); return encodeBytes(new Uint8Array(bits)); }
+function renderAccounts() { document.getElementById('accounts-body').innerHTML = accounts.map(account => `<tr><td><strong>${esc(account.username)}</strong></td><td>${account.role === 'primary' ? 'Primary account' : 'Secondary account'}</td><td><span class="badge">Active</span></td></tr>`).join(''); }
+const activityActionLabels = {product_created:'Product created',product_updated:'Product edited',product_deleted:'Product deleted',stock_adjusted:'Stock adjusted',cart_item_added:'Item added to sale',cart_quantity_changed:'Sale quantity changed',cart_item_removed:'Item removed from sale',sale_completed:'Sale completed',reservation_created:'Pre-order reserved',reservation_arrived:'Reservation arrived',reservation_cancelled:'Reservation cancelled',account_created:'Account created',sign_in:'Signed in',sign_in_failed:'Sign-in failed',sign_out:'Signed out',password_changed:'Password changed'};
+function recordActivity(action, target, details, actor = activeAccount?.username || 'Unknown') {
+ activityLog.push({time:new Date().toISOString(),actor,action,target:String(target || ''),details:String(details || '').slice(0,400)});
+ if (activityLog.length > 2500) activityLog = activityLog.slice(-2500);
+ try { localStorage.setItem('mole-activity',JSON.stringify(activityLog)); }
+ catch { toast('Could not save the activity log on this device.'); }
+ if (currentPage === 'activity') renderActivity();
+}
+function renderActivity() {
+ const body = document.getElementById('activity-body');
+ body.innerHTML = activityLog.length ? [...activityLog].reverse().map(entry => `<tr><td>${new Date(entry.time).toLocaleString()}</td><td>${esc(entry.actor)}</td><td class="activity-action">${esc(activityActionLabels[entry.action] || entry.action)}</td><td>${esc(entry.target)}</td><td class="activity-details">${esc(entry.details)}</td></tr>`).join('') : '<tr><td colspan="5" class="activity-empty">No activity recorded yet.</td></tr>';
+}
+function refreshAuth() {
+ activeAccount = accounts.find(account => account.id === sessionStorage.getItem('mole-session-account')) || null;
+ const setup = accounts.length === 0;
+ const signedIn = Boolean(activeAccount);
+ document.getElementById('login-screen').hidden = signedIn;
+ document.getElementById('app-root').setAttribute('aria-hidden', String(!signedIn));
+ document.getElementById('app-root').inert = !signedIn;
+ document.body.classList.toggle('auth-locked', !signedIn);
+ document.getElementById('accounts-nav').hidden = activeAccount?.role !== 'primary';
+ document.getElementById('login-kicker').textContent = setup ? 'First-time setup' : 'Secure sign-in';
+ document.getElementById('login-title').textContent = setup ? 'Create your account' : 'Sign in';
+ document.getElementById('login-description').textContent = setup ? 'Create the first account to protect this store. It will be the primary administrator.' : 'Enter your username and password to open the point of sale.';
+ document.getElementById('setup-confirm-wrap').hidden = !setup;
+ document.getElementById('setup-password-confirm').required = setup;
+ document.getElementById('login-password').autocomplete = setup ? 'new-password' : 'current-password';
+ document.getElementById('login-submit').textContent = setup ? 'Create primary account' : 'Sign in';
+ if (signedIn) { document.getElementById('user-name').textContent = activeAccount.username; document.getElementById('user-avatar').textContent = activeAccount.username.charAt(0).toUpperCase(); document.getElementById('user-role').textContent = activeAccount.role === 'primary' ? 'Primary account' : 'Secondary account'; }
+}
+document.getElementById('password-change-form').before(document.getElementById('quick-switch-template').content.cloneNode(true));
+document.getElementById('login-form').addEventListener('submit', async event => {
+ event.preventDefault();
+ const username = document.getElementById('login-username').value.trim();
+ const normalizedUsername = username.toLowerCase();
+ const password = document.getElementById('login-password').value;
+ const confirmation = document.getElementById('setup-password-confirm').value;
+ const setup = accounts.length === 0;
+ const error = document.getElementById('login-error');
+ const button = document.getElementById('login-submit');
+ error.textContent = ''; button.disabled = true;
+ let activityAction = 'sign_in';
+ let activityDetails = 'Successful sign-in.';
+ try {
+  if (setup) {
+   if (password.length < 8) throw new Error('Password must be at least 8 characters.');
+   if (password !== confirmation) throw new Error('Passwords do not match.');
+   if (accounts.some(account => account.normalizedUsername === normalizedUsername)) throw new Error('That username is already taken.');
+   const salt = crypto.getRandomValues(new Uint8Array(16));
+   const account = {id:'primary-owner',username,normalizedUsername,role:'primary',salt:encodeBytes(salt),hash:await hashPassword(password,salt)};
+   accounts.push(account);
+   try { localStorage.setItem('mole-accounts',JSON.stringify(accounts)); } catch { accounts.pop(); throw new Error('Could not save the account on this device.'); }
+   sessionStorage.setItem('mole-session-account',account.id);
+  activityAction = 'account_created';
+  activityDetails = 'Created the primary account.';
+  } else {
+   const account = accounts.find(item => item.normalizedUsername === normalizedUsername);
+   if (!account || await hashPassword(password,decodeBytes(account.salt)) !== account.hash) throw new Error('Username or password is incorrect.');
+   sessionStorage.setItem('mole-session-account',account.id);
+  }
+  document.getElementById('login-form').reset(); refreshAuth();
+  recordActivity(activityAction,username,activityDetails);
+  if (setup) recordActivity('sign_in',username,'Signed in as the primary account.');
+ } catch (error) { document.getElementById('login-error').textContent = error.message || 'Could not sign in.'; if (!setup) recordActivity('sign_in_failed',normalizedUsername || 'Unknown user','Sign-in attempt rejected.','Unknown'); }
+ finally { button.disabled = false; }
+});
+document.getElementById('logout').addEventListener('click', () => { recordActivity('sign_out',activeAccount?.username || 'Unknown','Signed out.'); sessionStorage.removeItem('mole-session-account'); document.getElementById('login-form').reset(); document.getElementById('login-error').textContent = ''; refreshAuth(); });
+document.getElementById('profile-trigger').addEventListener('click', () => {
+ if (!activeAccount) return;
+ document.getElementById('profile-username').textContent = activeAccount.username;
+ document.getElementById('profile-role').textContent = activeAccount.role === 'primary' ? 'Primary account' : 'Secondary account';
+ const otherAccounts = accounts.filter(account => account.id !== activeAccount.id);
+ const switchSelect = document.getElementById('switch-account');
+ switchSelect.replaceChildren(new Option('Select a user',''),...otherAccounts.map(account=>new Option(account.username,account.id)));
+ document.getElementById('switch-user-empty').hidden = otherAccounts.length > 0;
+ document.getElementById('quick-switch-form').hidden = otherAccounts.length === 0;
+ document.getElementById('quick-switch-form').reset();
+ document.getElementById('switch-user-error').textContent = '';
+ document.getElementById('password-change-form').reset();
+ document.getElementById('password-change-error').textContent = '';
+ openModal('profile-modal');
+});
+document.getElementById('quick-switch-form').addEventListener('submit', async event => {
+ event.preventDefault();
+ const form = event.currentTarget;
+ const target = accounts.find(account => account.id === document.getElementById('switch-account').value);
+ const error = document.getElementById('switch-user-error');
+ const button = form.querySelector('button[type="submit"]');
+ error.textContent = '';
+ if (!target) { error.textContent = 'Select a user to switch to.'; return; }
+ button.disabled = true;
+ try {
+  const password = document.getElementById('switch-password').value;
+  if (await hashPassword(password,decodeBytes(target.salt)) !== target.hash) throw new Error('That user password is incorrect.');
+  const previousUsername = activeAccount?.username || 'Unknown';
+  sessionStorage.setItem('mole-session-account',target.id);
+  refreshAuth();
+  recordActivity('sign_out',previousUsername,`Switched to ${target.username}.`,previousUsername);
+  recordActivity('sign_in',target.username,`Switched from ${previousUsername}.`,target.username);
+  closeModal(document.getElementById('profile-modal'));
+  form.reset();
+  toast(`Switched to ${target.username}`);
+ } catch (error) { document.getElementById('switch-user-error').textContent = error.message || 'Could not switch user.'; }
+ finally { button.disabled = false; }
+});
+document.getElementById('password-change-form').addEventListener('submit', async event => {
+ event.preventDefault();
+ if (!activeAccount) return;
+ const error = document.getElementById('password-change-error');
+ const currentPassword = document.getElementById('current-password').value;
+ const newPassword = document.getElementById('new-password').value;
+ const confirmation = document.getElementById('confirm-new-password').value;
+ if (newPassword.length < 8) { error.textContent = 'Password must be at least 8 characters.'; return; }
+ if (newPassword !== confirmation) { error.textContent = 'New passwords do not match.'; return; }
+ if (await hashPassword(currentPassword,decodeBytes(activeAccount.salt)) !== activeAccount.hash) { error.textContent = 'Current password is incorrect.'; return; }
+ const previous = {salt:activeAccount.salt,hash:activeAccount.hash};
+ const salt = crypto.getRandomValues(new Uint8Array(16));
+ activeAccount.salt = encodeBytes(salt);
+ activeAccount.hash = await hashPassword(newPassword,salt);
+ try { localStorage.setItem('mole-accounts',JSON.stringify(accounts)); } catch { Object.assign(activeAccount,previous); error.textContent = 'Could not save the password on this device.'; return; }
+ recordActivity('password_changed',activeAccount.username,'Changed account password.');
+ closeModal(document.getElementById('profile-modal'));
+ event.target.reset();
+ toast('Password changed');
+});
+document.getElementById('add-account').addEventListener('click', () => { document.getElementById('account-form').reset(); document.getElementById('account-error').textContent = ''; openModal('account-modal'); });
+document.getElementById('account-form').addEventListener('submit', async event => {
+ event.preventDefault();
+ if (activeAccount?.role !== 'primary') return;
+ const username = document.getElementById('new-account-username').value.trim();
+ const normalizedUsername = username.toLowerCase();
+ const password = document.getElementById('new-account-password').value;
+ const confirmation = document.getElementById('new-account-confirm').value;
+ const error = document.getElementById('account-error');
+ if (accounts.some(account => account.normalizedUsername === normalizedUsername)) { error.textContent = 'That username is already taken.'; return; }
+ if (password !== confirmation) { error.textContent = 'Passwords do not match.'; return; }
+ const salt = crypto.getRandomValues(new Uint8Array(16));
+ accounts.push({id:Date.now().toString(36)+Math.random().toString(36).slice(2),username,normalizedUsername,role:'secondary',salt:encodeBytes(salt),hash:await hashPassword(password,salt)});
+ try { localStorage.setItem('mole-accounts',JSON.stringify(accounts)); } catch { accounts.pop(); error.textContent = 'Could not save the account on this device.'; return; }
+ recordActivity('account_created',username,'Created a secondary account.');
+ renderAccounts(); closeModal(document.getElementById('account-modal')); toast('Secondary account created');
+});
+document.getElementById('today').textContent = new Intl.DateTimeFormat(undefined,{weekday:'short',month:'short',day:'numeric',year:'numeric'}).format(new Date());
+const salesDateTo = new Date();
+const salesDateFrom = new Date(salesDateTo);
+salesDateFrom.setDate(salesDateFrom.getDate()-29);
+document.getElementById('sales-to').value = salesDateKey(salesDateTo.toISOString());
+document.getElementById('sales-from').value = salesDateKey(salesDateFrom.toISOString());
+renderProducts(); renderCart(); refreshAuth();
+</script>
+</body>
+</html>
