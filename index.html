@@ -68,7 +68,7 @@ main{padding:30px 34px 38px;min-width:0;max-width:1700px;width:100%;margin:0 aut
 .tn-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:18px;margin:18px 0}.tn-col{display:flex;flex-direction:column;gap:18px;min-width:0}
 .tn-card{background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:16px;box-shadow:var(--shadow)}.tn-card-title{margin:0 0 12px;font-size:14px}
 .tn-inline{display:flex;gap:10px;align-items:center;margin-top:12px;flex-wrap:wrap}.tn-inline .form-control{flex:1;min-width:140px}
-.tn-points-form{display:grid;grid-template-columns:1fr 1fr;gap:10px}.tn-points-form .form-control:nth-child(4),.tn-points-form .primary-button{grid-column:span 2}
+.tn-points-form{display:grid;grid-template-columns:1fr 1fr;gap:10px}.tn-points-form .form-control:nth-child(4),.tn-points-form .primary-button,.tn-paid-toggle{grid-column:span 2}.tn-day-table{width:100%;margin-top:8px}
 .tn-prizes{white-space:pre-wrap;font-size:13px;color:var(--ink)}
 .tn-cal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}.tn-cal-head .tn-card-title{margin:0}
 .tn-cal{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}.tn-cal-dow{font-size:10px;color:var(--muted);text-align:center;padding:4px 0}
@@ -135,12 +135,12 @@ main{padding:30px 34px 38px;min-width:0;max-width:1700px;width:100%;margin:0 aut
   <div class="sales-metrics" id="tn-metrics"></div>
   <div class="tn-grid">
    <div class="tn-col">
-    <div class="tn-card"><h3 class="tn-card-title">Leaderboard</h3><div class="table-scroll"><table><thead><tr><th>#</th><th>Player</th><th>Paid</th><th>Points</th><th></th></tr></thead><tbody id="tn-leaderboard"></tbody></table></div>
-     <form class="tn-inline" id="tn-player-form"><input class="form-control" id="tn-player-name" required maxlength="60" placeholder="Player name" aria-label="Player name"><label class="stock-visibility-filter"><input id="tn-player-paid" type="checkbox"> Paid entry</label><button class="primary-button" type="submit">Add player</button></form></div>
+    <div class="tn-card"><h3 class="tn-card-title">Leaderboard</h3><div class="table-scroll"><table><thead><tr><th>#</th><th>Player</th><th>Days paid</th><th>Points</th><th></th></tr></thead><tbody id="tn-leaderboard"></tbody></table></div>
+     <form class="tn-inline" id="tn-player-form"><input class="form-control" id="tn-player-name" required maxlength="60" placeholder="Player name" aria-label="Player name"><button class="primary-button" type="submit">Add player</button></form></div>
     <div class="tn-card"><h3 class="tn-card-title">Prizes</h3><div class="tn-prizes" id="tn-prizes"></div></div>
    </div>
    <div class="tn-col">
-    <div class="tn-card"><h3 class="tn-card-title">Add points</h3><form class="tn-points-form" id="tn-points-form"><select class="form-control" id="tn-points-player" required aria-label="Player"></select><input class="form-control" id="tn-points-value" type="number" step="1" required placeholder="Points" aria-label="Points"><input class="form-control" id="tn-points-date" type="date" required aria-label="Date played"><input class="form-control" id="tn-points-note" maxlength="80" placeholder="Note (e.g. Round 2 win)" aria-label="Note"><button class="primary-button" type="submit">Add</button></form><div class="login-error" id="tn-points-error" role="alert" aria-live="polite"></div></div>
+    <div class="tn-card"><h3 class="tn-card-title">Add points</h3><form class="tn-points-form" id="tn-points-form"><select class="form-control" id="tn-points-player" required aria-label="Player"></select><input class="form-control" id="tn-points-value" type="number" step="1" required placeholder="Points" aria-label="Points"><input class="form-control" id="tn-points-date" type="date" required aria-label="Date played"><input class="form-control" id="tn-points-note" maxlength="80" placeholder="Note (e.g. Round 2 win)" aria-label="Note"><label class="stock-visibility-filter tn-paid-toggle"><input id="tn-points-paid" type="checkbox" checked> Entry fee paid for this day</label><button class="primary-button" type="submit">Add</button></form><div class="login-error" id="tn-points-error" role="alert" aria-live="polite"></div></div>
     <div class="tn-card"><div class="tn-cal-head"><button class="secondary-button" id="tn-cal-prev" aria-label="Previous month">‹</button><h3 class="tn-card-title" id="tn-cal-title"></h3><button class="secondary-button" id="tn-cal-next" aria-label="Next month">›</button></div><div class="tn-cal" id="tn-cal"></div><div class="tn-day" id="tn-day"></div></div>
    </div>
   </div>
@@ -1007,13 +1007,13 @@ function renderTournaments() {
 }
 function renderTournamentDetail(t) {
  const standings = tnStandings(t);
- const paidCount = t.players.filter(p => p.paid).length;
+ const daysPaid = playerId => t.payments.filter(p => p.playerId === playerId).length;
  tnEl('tn-name').textContent = t.name;
  tnEl('tn-dates').textContent = `${t.game} · ${tnDate(t.startDate)} – ${tnDate(t.endDate)} · ${tnStatus(t)}`;
  tnEl('tn-description').textContent = t.description || '';
  tnEl('tn-prizes').textContent = t.prizes || 'No prizes listed.';
- tnEl('tn-metrics').innerHTML = [['Entry cost', money(t.entryCost)], ['Players', t.players.length], ['Entries paid', `${paidCount} of ${t.players.length}`], ['Entry fees collected', money(paidCount * t.entryCost)]].map(([label, value]) => `<div class="metric"><div><div class="metric-label">${label}</div><div class="metric-value">${value}</div></div></div>`).join('');
- tnEl('tn-leaderboard').innerHTML = standings.length ? standings.map(row => `<tr><td>${row.rank}</td><td><strong>${esc(row.player.name)}</strong></td><td><input type="checkbox" data-tn-paid="${esc(row.player.id)}" ${row.player.paid ? 'checked' : ''} aria-label="Paid entry for ${esc(row.player.name)}"></td><td><strong>${row.points}</strong></td><td><button class="tn-remove" data-tn-remove-player="${esc(row.player.id)}" aria-label="Remove ${esc(row.player.name)}">Remove</button></td></tr>`).join('') : '<tr><td colspan="5" class="orders-empty">No players yet.</td></tr>';
+ tnEl('tn-metrics').innerHTML = [['Entry cost per day', money(t.entryCost)], ['Players', t.players.length], ['Days paid', t.payments.length], ['Entry fees collected', money(t.payments.length * t.entryCost)]].map(([label, value]) => `<div class="metric"><div><div class="metric-label">${label}</div><div class="metric-value">${value}</div></div></div>`).join('');
+ tnEl('tn-leaderboard').innerHTML = standings.length ? standings.map(row => `<tr><td>${row.rank}</td><td><strong>${esc(row.player.name)}</strong></td><td>${daysPaid(row.player.id)}</td><td><strong>${row.points}</strong></td><td><button class="tn-remove" data-tn-remove-player="${esc(row.player.id)}" aria-label="Remove ${esc(row.player.name)}">Remove</button></td></tr>`).join('') : '<tr><td colspan="5" class="orders-empty">No players yet.</td></tr>';
  tnEl('tn-points-player').replaceChildren(new Option(standings.length ? 'Select player' : 'Add a player first', ''), ...standings.map(row => new Option(row.player.name, row.player.id)));
  const playerName = id => t.players.find(p => p.id === id)?.name || 'Removed player';
  const history = [...t.entries].sort((a, b) => b.date.localeCompare(a.date) || b.createdAt.localeCompare(a.createdAt));
@@ -1035,13 +1035,19 @@ function renderTournamentCalendar(t) {
   html += `<button type="button" class="${classes}" data-tn-day="${key}">${day}${counts[key] ? `<span class="tn-dot">${counts[key]} ${counts[key] === 1 ? 'entry' : 'entries'}</span>` : ''}</button>`;
  }
  tnEl('tn-cal').innerHTML = html;
- const dayEntries = tnSelectedDay ? t.entries.filter(e => e.date === tnSelectedDay) : [];
- tnEl('tn-day').innerHTML = tnSelectedDay ? `<strong>${tnDate(tnSelectedDay)}</strong>${dayEntries.length ? `<ul>${dayEntries.map(e => `<li>${esc(t.players.find(p => p.id === e.playerId)?.name || 'Removed player')}: ${e.points > 0 ? '+' : ''}${e.points}${e.note ? ` · ${esc(e.note)}` : ''}</li>`).join('')}</ul>` : '<div class="order-line-meta">No games recorded this day.</div>'}` : '<div class="order-line-meta">Highlighted days are within the tournament; bold days have recorded games.</div>';
+ if (!tnSelectedDay) { tnEl('tn-day').innerHTML = '<div class="order-line-meta">Highlighted days are within the tournament; bold days have recorded games. Click a day to see points and mark who paid that day.</div>'; return; }
+ const rows = t.players.map(p => {
+  const points = t.entries.filter(e => e.date === tnSelectedDay && e.playerId === p.id).reduce((sum, e) => sum + e.points, 0);
+  const paid = t.payments.some(x => x.playerId === p.id && x.date === tnSelectedDay);
+  return `<tr><td>${esc(p.name)}</td><td>${points > 0 ? '+' : ''}${points}</td><td><input type="checkbox" data-tn-paid-day="${esc(p.id)}" ${paid ? 'checked' : ''} aria-label="${esc(p.name)} paid on ${tnSelectedDay}"></td></tr>`;
+ }).join('');
+ tnEl('tn-day').innerHTML = `<strong>${tnDate(tnSelectedDay)}</strong>${rows ? `<table class="tn-day-table"><thead><tr><th>Player</th><th>Points</th><th>Paid</th></tr></thead><tbody>${rows}</tbody></table>` : '<div class="order-line-meta">Add players first.</div>'}`;
 }
 function openTournament(id) {
  const t = tournaments.find(item => item.id === id);
  if (!t) return;
  activeTournamentId = id;
+ if (!Array.isArray(t.payments)) t.payments = [];
  tnSelectedDay = '';
  const base = tnToday() >= t.startDate && tnToday() <= t.endDate ? tnToday() : t.startDate;
  tnCalendar = {year:Number(base.slice(0, 4)), month:Number(base.slice(5, 7)) - 1};
@@ -1072,7 +1078,7 @@ tnEl('tournament-form').addEventListener('submit', event => {
  const existing = editingTournamentId ? tournaments.find(t => t.id === editingTournamentId) : null;
  const snapshot = existing ? {...existing} : null;
  if (existing) Object.assign(existing, data);
- else tournaments.push({id:tnId('T'), ...data, createdAt:new Date().toISOString(), createdBy:activeAccount?.username || 'Unknown', players:[], entries:[]});
+ else tournaments.push({id:tnId('T'), ...data, createdAt:new Date().toISOString(), createdBy:activeAccount?.username || 'Unknown', players:[], entries:[], payments:[]});
  if (!persistTournaments()) { if (existing) Object.assign(existing, snapshot); else tournaments.pop(); return; }
  recordActivity(existing ? 'tournament_updated' : 'tournament_created', data.name, `${data.game}, ${data.startDate} to ${data.endDate}, entry ${money(data.entryCost)}.`);
  closeModal(tnEl('tournament-modal'));
@@ -1093,17 +1099,19 @@ tnEl('tn-player-form').addEventListener('submit', event => {
  const t = tnCurrent(); const name = tnEl('tn-player-name').value.trim();
  if (!t || !name) return;
  if (t.players.some(p => p.name.toLowerCase() === name.toLowerCase())) { toast('That player is already in this tournament.'); return; }
- t.players.push({id:tnId('P'), name, paid:tnEl('tn-player-paid').checked});
+ t.players.push({id:tnId('P'), name});
  if (!persistTournaments()) { t.players.pop(); return; }
  recordActivity('tournament_player_added', t.name, name);
  event.target.reset();
  renderTournamentDetail(t);
 });
-tnEl('tn-leaderboard').addEventListener('change', event => {
- const box = event.target.closest('[data-tn-paid]'); const t = tnCurrent();
- const player = t?.players.find(p => p.id === box?.dataset.tnPaid);
- if (!player) return;
- player.paid = box.checked; persistTournaments(); renderTournamentDetail(t);
+tnEl('tn-day').addEventListener('change', event => {
+ const box = event.target.closest('[data-tn-paid-day]'); const t = tnCurrent();
+ if (!box || !t || !tnSelectedDay) return;
+ const playerId = box.dataset.tnPaidDay;
+ t.payments = t.payments.filter(x => !(x.playerId === playerId && x.date === tnSelectedDay));
+ if (box.checked) t.payments.push({playerId, date:tnSelectedDay});
+ persistTournaments(); renderTournamentDetail(t);
 });
 tnEl('tn-leaderboard').addEventListener('click', event => {
  const button = event.target.closest('[data-tn-remove-player]'); const t = tnCurrent();
@@ -1111,6 +1119,7 @@ tnEl('tn-leaderboard').addEventListener('click', event => {
  if (!player || !confirm(`Remove ${player.name} and their recorded points?`)) return;
  t.players = t.players.filter(p => p.id !== player.id);
  t.entries = t.entries.filter(e => e.playerId !== player.id);
+ t.payments = t.payments.filter(x => x.playerId !== player.id);
  persistTournaments(); recordActivity('tournament_player_removed', t.name, player.name); renderTournamentDetail(t);
 });
 tnEl('tn-points-form').addEventListener('submit', event => {
@@ -1120,6 +1129,7 @@ tnEl('tn-points-form').addEventListener('submit', event => {
  if (!t || !playerId || !Number.isInteger(points) || points === 0 || !date) { error.textContent = 'Choose a player, a whole number of points (not 0) and a date.'; return; }
  error.textContent = '';
  t.entries.push({id:tnId('E'), playerId, points, date, note:tnEl('tn-points-note').value.trim(), createdAt:new Date().toISOString()});
+ if (tnEl('tn-points-paid').checked && !t.payments.some(x => x.playerId === playerId && x.date === date)) t.payments.push({playerId, date});
  if (!persistTournaments()) { t.entries.pop(); return; }
  recordActivity('tournament_points_added', t.name, `${t.players.find(p => p.id === playerId).name}: ${points > 0 ? '+' : ''}${points} on ${date}.`);
  tnEl('tn-points-value').value = ''; tnEl('tn-points-note').value = '';
