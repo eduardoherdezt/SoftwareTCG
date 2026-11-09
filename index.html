@@ -1126,7 +1126,7 @@ tnEl('tn-points-form').addEventListener('submit', event => {
  event.preventDefault();
  const t = tnCurrent(); const error = tnEl('tn-points-error');
  const playerId = tnEl('tn-points-player').value; const points = Number(tnEl('tn-points-value').value); const date = tnEl('tn-points-date').value;
- if (!t || !playerId || !Number.isInteger(points) || points === 0 || !date) { error.textContent = 'Choose a player, a whole number of points (not 0) and a date.'; return; }
+ if (!t || !playerId || !Number.isInteger(points) || !date) { error.textContent = 'Choose a player, a whole number of points (0 is allowed) and a date.'; return; }
  error.textContent = '';
  t.entries.push({id:tnId('E'), playerId, points, date, note:tnEl('tn-points-note').value.trim(), createdAt:new Date().toISOString()});
  if (tnEl('tn-points-paid').checked && !t.payments.some(x => x.playerId === playerId && x.date === date)) t.payments.push({playerId, date});
