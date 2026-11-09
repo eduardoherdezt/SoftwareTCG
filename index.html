@@ -63,6 +63,22 @@ main{padding:30px 34px 38px;min-width:0;max-width:1700px;width:100%;margin:0 aut
 </style>
 <style>
 .product-preorder-toggle{margin:14px 0 8px}.product-preorder-toggle input{accent-color:#28533f}.product-arrival-wrap{margin-bottom:12px}
+#tournament-modal .modal{max-height:90vh;overflow-y:auto}
+.tn-head{margin-bottom:16px}.tn-desc{margin-top:8px;color:var(--ink);font-size:13px;white-space:pre-wrap}
+.tn-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:18px;margin:18px 0}.tn-col{display:flex;flex-direction:column;gap:18px;min-width:0}
+.tn-card{background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:16px;box-shadow:var(--shadow)}.tn-card-title{margin:0 0 12px;font-size:14px}
+.tn-inline{display:flex;gap:10px;align-items:center;margin-top:12px;flex-wrap:wrap}.tn-inline .form-control{flex:1;min-width:140px}
+.tn-points-form{display:grid;grid-template-columns:1fr 1fr;gap:10px}.tn-points-form .form-control:nth-child(4),.tn-points-form .primary-button{grid-column:span 2}
+.tn-prizes{white-space:pre-wrap;font-size:13px;color:var(--ink)}
+.tn-cal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}.tn-cal-head .tn-card-title{margin:0}
+.tn-cal{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}.tn-cal-dow{font-size:10px;color:var(--muted);text-align:center;padding:4px 0}
+.tn-cal-day{position:relative;min-height:44px;border:1px solid var(--line);border-radius:6px;background:#fff;padding:4px;font-size:11px;text-align:left;cursor:pointer;color:var(--ink)}
+.tn-cal-day.blank{border:0;background:transparent;cursor:default}.tn-cal-day.in-range{background:var(--green-soft)}.tn-cal-day.has-play{border-color:var(--green);font-weight:700}
+.tn-cal-day.selected{outline:2px solid var(--gold)}.tn-cal-day .tn-dot{display:block;margin-top:4px;font-size:9px;color:var(--green)}
+.tn-day{margin-top:12px;font-size:12px}.tn-day ul{margin:6px 0 0;padding-left:18px}
+.tn-remove{border:0;background:transparent;color:#a05444;cursor:pointer;font-size:12px}
+.tn-link{border:0;background:transparent;padding:0;color:var(--green);font-weight:700;cursor:pointer;font:inherit;text-align:left}
+@media (max-width:1100px){.tn-grid{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -75,6 +91,7 @@ main{padding:30px 34px 38px;min-width:0;max-width:1700px;width:100%;margin:0 aut
     <button data-page="inventory"><span class="nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3 9 5-9 5-9-5 9-5Z"/><path d="m3 8 9 5 9-5v10l-9 5-9-5V8Z"/><path d="M12 13v10M7.5 5.5l9 5"/></svg></span><span class="nav-text">Inventory</span></button>
     <button data-page="orders"><span class="nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16v4a2 2 0 0 0 0 4v4H4v-4a2 2 0 0 0 0-4V6Z"/><path d="M9 9v1m0 3v2m4-6v1m0 3v2"/></svg></span><span class="nav-text">Orders</span></button>
     <button data-page="reservations"><span class="nav-icon">▣</span><span class="nav-text">Reservations</span></button>
+    <button data-page="tournaments"><span class="nav-icon">♛</span><span class="nav-text">Tournaments</span></button>
     <button data-page="sales"><span class="nav-icon">▥</span><span class="nav-text">Sales report</span></button>
     <button data-page="activity"><span class="nav-icon">◴</span><span class="nav-text">Activity</span></button>
     <button data-page="accounts" id="accounts-nav" hidden><span class="nav-icon">♙</span><span class="nav-text">Accounts</span></button>
@@ -107,6 +124,29 @@ main{padding:30px 34px 38px;min-width:0;max-width:1700px;width:100%;margin:0 aut
  <div class="page-toolbar"><div><h2 class="section-title">Pre-orders &amp; reservations</h2><div class="section-note">Track upcoming products, customer payments, and arrival dates.</div></div><button class="secondary-button" id="add-reservation">+ New reservation</button></div>
  <div class="data-panel"><div class="table-scroll"><table><thead><tr><th>Reservation</th><th>Customer</th><th>Product</th><th>Qty</th><th>Arrival date</th><th>Paid</th><th>Balance</th><th>Status</th></tr></thead><tbody id="reservations-body"></tbody></table></div></div>
 </section>
+<section class="workspace" id="page-tournaments">
+ <div id="tournament-list-view">
+  <div class="page-toolbar"><div><h2 class="section-title">Tournaments</h2><div class="section-note">Run events, track players, points and prizes.</div></div><button class="secondary-button" id="add-tournament">+ New tournament</button></div>
+  <div class="data-panel"><div class="table-scroll"><table><thead><tr><th>Tournament</th><th>Dates</th><th>Entry cost</th><th>Players</th><th>Leader</th><th>Status</th></tr></thead><tbody id="tournaments-body"></tbody></table></div></div>
+ </div>
+ <div id="tournament-detail-view" hidden>
+  <div class="page-toolbar"><div><button class="secondary-button" id="tournament-back">← All tournaments</button></div><div class="toolbar-actions"><button class="secondary-button" id="tournament-edit">Edit</button><button class="delete-product-button" id="tournament-delete">Delete</button></div></div>
+  <div class="tn-head"><h2 class="section-title" id="tn-name"></h2><div class="section-note" id="tn-dates"></div><div class="tn-desc" id="tn-description"></div></div>
+  <div class="sales-metrics" id="tn-metrics"></div>
+  <div class="tn-grid">
+   <div class="tn-col">
+    <div class="tn-card"><h3 class="tn-card-title">Leaderboard</h3><div class="table-scroll"><table><thead><tr><th>#</th><th>Player</th><th>Paid</th><th>Points</th><th></th></tr></thead><tbody id="tn-leaderboard"></tbody></table></div>
+     <form class="tn-inline" id="tn-player-form"><input class="form-control" id="tn-player-name" required maxlength="60" placeholder="Player name" aria-label="Player name"><label class="stock-visibility-filter"><input id="tn-player-paid" type="checkbox"> Paid entry</label><button class="primary-button" type="submit">Add player</button></form></div>
+    <div class="tn-card"><h3 class="tn-card-title">Prizes</h3><div class="tn-prizes" id="tn-prizes"></div></div>
+   </div>
+   <div class="tn-col">
+    <div class="tn-card"><h3 class="tn-card-title">Add points</h3><form class="tn-points-form" id="tn-points-form"><select class="form-control" id="tn-points-player" required aria-label="Player"></select><input class="form-control" id="tn-points-value" type="number" step="1" required placeholder="Points" aria-label="Points"><input class="form-control" id="tn-points-date" type="date" required aria-label="Date played"><input class="form-control" id="tn-points-note" maxlength="80" placeholder="Note (e.g. Round 2 win)" aria-label="Note"><button class="primary-button" type="submit">Add</button></form><div class="login-error" id="tn-points-error" role="alert" aria-live="polite"></div></div>
+    <div class="tn-card"><div class="tn-cal-head"><button class="secondary-button" id="tn-cal-prev" aria-label="Previous month">‹</button><h3 class="tn-card-title" id="tn-cal-title"></h3><button class="secondary-button" id="tn-cal-next" aria-label="Next month">›</button></div><div class="tn-cal" id="tn-cal"></div><div class="tn-day" id="tn-day"></div></div>
+   </div>
+  </div>
+  <div class="tn-card"><h3 class="tn-card-title">Play history</h3><div class="table-scroll"><table><thead><tr><th>Date played</th><th>Player</th><th>Points</th><th>Note</th><th></th></tr></thead><tbody id="tn-history"></tbody></table></div></div>
+ </div>
+</section>
 <section class="workspace" id="page-sales">
  <div class="page-toolbar"><div><h2 class="section-title">Sales report</h2><div class="section-note">Daily sales, recorded product costs, and gross profit in MXN.</div></div></div>
  <div class="sales-controls"><div class="sales-control"><label for="sales-user">User</label><select id="sales-user"><option value="all">All users</option></select></div><div class="sales-control"><label for="sales-from">From</label><input id="sales-from" type="date"></div><div class="sales-control"><label for="sales-to">To</label><input id="sales-to" type="date"></div></div>
@@ -137,6 +177,7 @@ main{padding:30px 34px 38px;min-width:0;max-width:1700px;width:100%;margin:0 aut
 <div class="modal-backdrop" id="order-detail-modal" role="dialog" aria-modal="true" aria-labelledby="order-detail-title"><div class="modal order-detail-modal"><div class="modal-head"><div><h2 class="modal-title" id="order-detail-title">Order details</h2><div class="modal-sub" id="order-detail-date"></div></div><button class="close-modal" data-close aria-label="Close">×</button></div><div class="order-detail-meta" id="order-detail-meta"></div><div class="table-scroll"><table class="order-lines"><thead><tr><th>Product</th><th class="order-qty">Qty</th><th class="order-unit">Unit price</th><th class="order-line-total">Line total</th></tr></thead><tbody id="order-detail-items"></tbody></table></div><div class="checkout-summary order-totals"><div class="total-row grand"><span>Total paid (tax included)</span><span class="receipt-total" id="detail-total"></span></div></div></div></div>
 <div class="modal-backdrop" id="checkout-modal" role="dialog" aria-modal="true" aria-labelledby="checkout-title"><div class="modal"><div id="checkout-form"><div class="modal-head"><div><h2 class="modal-title" id="checkout-title">Complete sale</h2><div class="modal-sub">Choose where the sale was made and how it was paid.</div></div><button class="close-modal" data-close aria-label="Close">×</button></div><label class="form-label" for="sale-channel">Sales channel</label><select class="form-control" id="sale-channel"><option>Physical store</option><option>TikTok</option><option>MercadoLibre</option><option>Facebook</option></select><label class="form-label" for="payment-method">Payment method</label><select class="form-control" id="payment-method"><option>Card</option><option>Cash</option><option>Transfer</option><option>Store credit</option><option>Other</option></select><div class="checkout-summary"><div class="total-row grand"><span>Total charged (tax included)</span><span class="receipt-total" id="modal-total">MXN 0.00</span></div></div><button class="primary-button" id="confirm-sale">Confirm payment</button></div><div id="checkout-success" hidden><div class="success-mark">✓</div><h2 class="modal-title">Sale complete</h2><div class="modal-sub" id="success-receipt"></div><button class="secondary-button" id="print-receipt" type="button" style="width:100%;margin-top:15px">Print ticket</button><button class="primary-button" id="new-sale">Start next sale</button></div></div></div>
 <div class="modal-backdrop" id="product-modal" role="dialog" aria-modal="true" aria-labelledby="product-modal-title"><div class="modal"><div class="modal-head"><div><h2 class="modal-title" id="product-modal-title">Add a product</h2><div class="modal-sub" id="product-modal-subtitle">Add an item to your local stock list.</div></div><button class="close-modal" data-close aria-label="Close">×</button></div><form id="product-form"><label class="form-label" for="new-name">Product name</label><input class="form-control" id="new-name" required maxlength="70" placeholder="e.g. Booster display box"><label class="form-label" for="new-category">Category</label><select class="form-control" id="new-category"><option>Pokémon</option><option>Magic</option><option>One Piece</option><option>Yu-Gi-Oh!</option><option>Lorcana</option><option>Accessories</option><option>Food &amp; Drinks</option><option>Single cards</option></select><label class="form-label" for="new-sku">SKU</label><input class="form-control" id="new-sku" maxlength="40" placeholder="Optional product code"><div style="display:grid;grid-template-columns:1fr 1fr;gap:12px"><div><label class="form-label" for="new-price">Price (MXN, tax included)</label><input class="form-control" id="new-price" required type="number" min="0.01" step="0.01" placeholder="0.00"></div><div><label class="form-label" for="new-stock">Stock quantity</label><input class="form-control" id="new-stock" required type="number" min="0" step="1" value="1"></div></div><label class="form-label" for="new-cost">Cost you paid (MXN)</label><input class="form-control" id="new-cost" type="number" min="0" step="0.01" placeholder="Leave blank if unknown"><label class="form-label" for="product-image">Product image</label><input class="form-control image-input" id="product-image" type="file" accept="image/*"><div class="form-helper">Images are resized and saved on this device.</div><div class="image-preview" id="image-preview-wrap" hidden><img id="image-preview" alt="Product preview"><button class="secondary-button" id="remove-image" type="button">Remove image</button></div><button class="primary-button" id="save-product" type="submit">Add to inventory</button></form></div></div>
+<div class="modal-backdrop" id="tournament-modal" role="dialog" aria-modal="true" aria-labelledby="tournament-modal-title"><div class="modal"><div class="modal-head"><div><h2 class="modal-title" id="tournament-modal-title">New tournament</h2><div class="modal-sub">Set the schedule, entry cost and prizes.</div></div><button class="close-modal" data-close aria-label="Close">×</button></div><form id="tournament-form" class="login-form"><label for="tournament-name">Name</label><input class="form-control" id="tournament-name" required maxlength="80"><label for="tournament-game">Game</label><select class="form-control" id="tournament-game"><option>Pokémon</option><option>Magic</option><option>One Piece</option><option>Yu-Gi-Oh!</option><option>Lorcana</option><option>Other</option></select><div style="display:grid;grid-template-columns:1fr 1fr;gap:12px"><div><label for="tournament-start">Start date</label><input class="form-control" id="tournament-start" type="date" required></div><div><label for="tournament-end">Finish date</label><input class="form-control" id="tournament-end" type="date" required></div></div><label for="tournament-cost">Entry cost per player (MXN)</label><input class="form-control" id="tournament-cost" type="number" min="0" step="0.01" value="0" required><label for="tournament-prizes">Prizes</label><textarea class="form-control description-control" id="tournament-prizes" maxlength="500" placeholder="1st: 3 booster boxes&#10;2nd: 1 booster box"></textarea><label for="tournament-description">Description</label><textarea class="form-control description-control" id="tournament-description" maxlength="500"></textarea><div class="login-error" id="tournament-error" role="alert" aria-live="polite"></div><button class="primary-button" type="submit">Save tournament</button></form></div></div>
 <template id="product-subcategory-template"><label class="form-label" for="new-subcategory">Item type / subcategory</label><select class="form-control" id="new-subcategory"><option value="Unspecified">Unspecified</option></select></template>
 <template id="product-preorder-template"><label class="stock-visibility-filter product-preorder-toggle"><input id="new-is-preorder" type="checkbox"> Available for pre-order</label><div class="product-arrival-wrap" id="product-arrival-wrap" hidden><label class="form-label" for="new-product-arrival">Expected arrival date</label><input class="form-control" id="new-product-arrival" type="date"></div></template>
 <template id="product-description-template"><label class="form-label" for="new-description">Description</label><textarea class="form-control description-control" id="new-description" maxlength="500" placeholder="Add details about this product"></textarea></template>
@@ -485,13 +526,13 @@ function renderSalesReport() {
 }
 function goTo(page) {
  if (page === 'accounts' && activeAccount?.role !== 'primary') page = 'pos';
- const labels = {pos:['Sales floor','Point of sale'],inventory:['Stockroom','Inventory'],orders:['Sales record','Orders'],reservations:['Pre-orders','Reservations'],sales:['Reports','Sales report'],activity:['History','Activity log'],accounts:['Administration','Team accounts']};
+ const labels = {pos:['Sales floor','Point of sale'],inventory:['Stockroom','Inventory'],orders:['Sales record','Orders'],reservations:['Pre-orders','Reservations'],tournaments:['Events','Tournaments'],sales:['Reports','Sales report'],activity:['History','Activity log'],accounts:['Administration','Team accounts']};
  if (!labels[page]) return;
  currentPage = page;
  document.querySelectorAll('.nav button').forEach(button => button.classList.toggle('active', button.dataset.page === page));
  document.querySelectorAll('.workspace').forEach(section => section.classList.toggle('active', section.id === `page-${page}`));
  document.getElementById('crumb').textContent = labels[page][0]; document.getElementById('page-title').textContent = labels[page][1];
- if (page === 'inventory') renderInventory(); if (page === 'orders') renderOrders(); if (page === 'reservations') renderReservations(); if (page === 'sales') renderSalesReport(); if (page === 'activity') renderActivity(); if (page === 'accounts') renderAccounts();
+ if (page === 'inventory') renderInventory(); if (page === 'orders') renderOrders(); if (page === 'reservations') renderReservations(); if (page === 'tournaments') renderTournaments(); if (page === 'sales') renderSalesReport(); if (page === 'activity') renderActivity(); if (page === 'accounts') renderAccounts();
 }
 document.querySelectorAll('.nav button').forEach(button => button.addEventListener('click', () => goTo(button.dataset.page)));
 document.getElementById('filters').addEventListener('click', event => { const button = event.target.closest('[data-filter]'); if (!button) return; activeCategory = button.dataset.filter; document.querySelectorAll('.filter').forEach(filter => filter.classList.toggle('active', filter === button)); renderProducts(); });
@@ -782,7 +823,7 @@ function encodeBytes(bytes) { return btoa(Array.from(bytes, byte => String.fromC
 function decodeBytes(value) { return Uint8Array.from(atob(value), character => character.charCodeAt(0)); }
 async function hashPassword(password, salt) { const key = await crypto.subtle.importKey('raw', new TextEncoder().encode(password), 'PBKDF2', false, ['deriveBits']); const bits = await crypto.subtle.deriveBits({name:'PBKDF2',salt,iterations:150000,hash:'SHA-256'},key,256); return encodeBytes(new Uint8Array(bits)); }
 function renderAccounts() { document.getElementById('accounts-body').innerHTML = accounts.map(account => `<tr><td><strong>${esc(account.username)}</strong></td><td>${account.role === 'primary' ? 'Primary account' : 'Secondary account'}</td><td><span class="badge">Active</span></td></tr>`).join(''); }
-const activityActionLabels = {product_created:'Product created',product_updated:'Product edited',product_deleted:'Product deleted',stock_adjusted:'Stock adjusted',cart_item_added:'Item added to sale',cart_quantity_changed:'Sale quantity changed',cart_item_removed:'Item removed from sale',sale_completed:'Sale completed',reservation_created:'Pre-order reserved',reservation_arrived:'Reservation arrived',reservation_cancelled:'Reservation cancelled',account_created:'Account created',sign_in:'Signed in',sign_in_failed:'Sign-in failed',sign_out:'Signed out',password_changed:'Password changed'};
+const activityActionLabels = {product_created:'Product created',product_updated:'Product edited',product_deleted:'Product deleted',stock_adjusted:'Stock adjusted',cart_item_added:'Item added to sale',cart_quantity_changed:'Sale quantity changed',cart_item_removed:'Item removed from sale',sale_completed:'Sale completed',reservation_created:'Pre-order reserved',reservation_arrived:'Reservation arrived',reservation_cancelled:'Reservation cancelled',tournament_created:'Tournament created',tournament_updated:'Tournament edited',tournament_deleted:'Tournament deleted',tournament_player_added:'Tournament player added',tournament_player_removed:'Tournament player removed',tournament_points_added:'Tournament points added',tournament_points_removed:'Tournament points removed',account_created:'Account created',sign_in:'Signed in',sign_in_failed:'Sign-in failed',sign_out:'Signed out',password_changed:'Password changed'};
 function recordActivity(action, target, details, actor = activeAccount?.username || 'Unknown') {
  activityLog.push({time:new Date().toISOString(),actor,action,target:String(target || ''),details:String(details || '').slice(0,400)});
  if (activityLog.length > 2500) activityLog = activityLog.slice(-2500);
@@ -931,6 +972,170 @@ salesDateFrom.setDate(salesDateFrom.getDate()-29);
 document.getElementById('sales-to').value = salesDateKey(salesDateTo.toISOString());
 document.getElementById('sales-from').value = salesDateKey(salesDateFrom.toISOString());
 renderProducts(); renderCart(); refreshAuth();
+</script>
+<script>
+let tournaments = load('mole-tournaments', []);
+if (!Array.isArray(tournaments)) tournaments = [];
+let activeTournamentId = null;
+let tnCalendar = {year:new Date().getFullYear(), month:new Date().getMonth()};
+let tnSelectedDay = '';
+let editingTournamentId = null;
+const tnId = prefix => `${prefix}-${Date.now().toString(36)}${Math.random().toString(36).slice(2,6)}`;
+const tnToday = () => { const d = new Date(); d.setMinutes(d.getMinutes()-d.getTimezoneOffset()); return d.toISOString().slice(0,10); };
+const tnDate = value => value ? new Date(`${value}T12:00:00`).toLocaleDateString('es-MX') : '';
+const tnEl = id => document.getElementById(id);
+function persistTournaments() { try { localStorage.setItem('mole-tournaments', JSON.stringify(tournaments)); return true; } catch { toast('Could not save tournaments on this device.'); return false; } }
+const tnStatus = t => { const today = tnToday(); return today < t.startDate ? 'Upcoming' : today > t.endDate ? 'Finished' : 'In progress'; };
+function tnStandings(t) {
+ const rows = t.players.map(p => ({player:p, points:t.entries.filter(e => e.playerId === p.id).reduce((sum, e) => sum + e.points, 0)}));
+ rows.sort((a, b) => b.points - a.points || a.player.name.localeCompare(b.player.name));
+ rows.forEach((row, i) => { row.rank = i > 0 && rows[i-1].points === row.points ? rows[i-1].rank : i + 1; });
+ return rows;
+}
+const tnCurrent = () => tournaments.find(t => t.id === activeTournamentId);
+function renderTournaments() {
+ const detail = tnCurrent();
+ tnEl('tournament-list-view').hidden = Boolean(detail);
+ tnEl('tournament-detail-view').hidden = !detail;
+ if (detail) { renderTournamentDetail(detail); return; }
+ const rows = [...tournaments].sort((a, b) => b.startDate.localeCompare(a.startDate));
+ tnEl('tournaments-body').innerHTML = rows.length ? rows.map(t => {
+  const top = tnStandings(t)[0];
+  const status = tnStatus(t);
+  return `<tr><td><button class="tn-link" data-tournament-id="${esc(t.id)}">${esc(t.name)}</button><div class="order-line-meta">${esc(t.game)}</div></td><td>${tnDate(t.startDate)} – ${tnDate(t.endDate)}</td><td>${money(t.entryCost)}</td><td>${t.players.length}</td><td>${top && top.points ? `${esc(top.player.name)} (${top.points})` : '—'}</td><td><span class="badge ${status === 'In progress' ? '' : 'low'}">${status}</span></td></tr>`;
+ }).join('') : '<tr><td colspan="6" class="orders-empty">No tournaments yet. Create the first one.</td></tr>';
+}
+function renderTournamentDetail(t) {
+ const standings = tnStandings(t);
+ const paidCount = t.players.filter(p => p.paid).length;
+ tnEl('tn-name').textContent = t.name;
+ tnEl('tn-dates').textContent = `${t.game} · ${tnDate(t.startDate)} – ${tnDate(t.endDate)} · ${tnStatus(t)}`;
+ tnEl('tn-description').textContent = t.description || '';
+ tnEl('tn-prizes').textContent = t.prizes || 'No prizes listed.';
+ tnEl('tn-metrics').innerHTML = [['Entry cost', money(t.entryCost)], ['Players', t.players.length], ['Entries paid', `${paidCount} of ${t.players.length}`], ['Entry fees collected', money(paidCount * t.entryCost)]].map(([label, value]) => `<div class="metric"><div><div class="metric-label">${label}</div><div class="metric-value">${value}</div></div></div>`).join('');
+ tnEl('tn-leaderboard').innerHTML = standings.length ? standings.map(row => `<tr><td>${row.rank}</td><td><strong>${esc(row.player.name)}</strong></td><td><input type="checkbox" data-tn-paid="${esc(row.player.id)}" ${row.player.paid ? 'checked' : ''} aria-label="Paid entry for ${esc(row.player.name)}"></td><td><strong>${row.points}</strong></td><td><button class="tn-remove" data-tn-remove-player="${esc(row.player.id)}" aria-label="Remove ${esc(row.player.name)}">Remove</button></td></tr>`).join('') : '<tr><td colspan="5" class="orders-empty">No players yet.</td></tr>';
+ tnEl('tn-points-player').replaceChildren(new Option(standings.length ? 'Select player' : 'Add a player first', ''), ...standings.map(row => new Option(row.player.name, row.player.id)));
+ const playerName = id => t.players.find(p => p.id === id)?.name || 'Removed player';
+ const history = [...t.entries].sort((a, b) => b.date.localeCompare(a.date) || b.createdAt.localeCompare(a.createdAt));
+ tnEl('tn-history').innerHTML = history.length ? history.map(e => `<tr><td>${tnDate(e.date)}</td><td>${esc(playerName(e.playerId))}</td><td>${e.points > 0 ? '+' : ''}${e.points}</td><td>${esc(e.note || '')}</td><td><button class="tn-remove" data-tn-remove-entry="${esc(e.id)}">Delete</button></td></tr>`).join('') : '<tr><td colspan="5" class="orders-empty">No games recorded yet.</td></tr>';
+ renderTournamentCalendar(t);
+}
+function renderTournamentCalendar(t) {
+ const {year, month} = tnCalendar;
+ tnEl('tn-cal-title').textContent = new Date(year, month, 1).toLocaleDateString('es-MX', {month:'long', year:'numeric'});
+ const first = new Date(year, month, 1);
+ const offset = (first.getDay() + 6) % 7;
+ const days = new Date(year, month + 1, 0).getDate();
+ const counts = {};
+ t.entries.forEach(e => { counts[e.date] = (counts[e.date] || 0) + 1; });
+ let html = ['L', 'M', 'M', 'J', 'V', 'S', 'D'].map(d => `<div class="tn-cal-dow">${d}</div>`).join('') + '<div class="tn-cal-day blank"></div>'.repeat(offset);
+ for (let day = 1; day <= days; day++) {
+  const key = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+  const classes = ['tn-cal-day', key >= t.startDate && key <= t.endDate ? 'in-range' : '', counts[key] ? 'has-play' : '', key === tnSelectedDay ? 'selected' : ''].join(' ');
+  html += `<button type="button" class="${classes}" data-tn-day="${key}">${day}${counts[key] ? `<span class="tn-dot">${counts[key]} ${counts[key] === 1 ? 'entry' : 'entries'}</span>` : ''}</button>`;
+ }
+ tnEl('tn-cal').innerHTML = html;
+ const dayEntries = tnSelectedDay ? t.entries.filter(e => e.date === tnSelectedDay) : [];
+ tnEl('tn-day').innerHTML = tnSelectedDay ? `<strong>${tnDate(tnSelectedDay)}</strong>${dayEntries.length ? `<ul>${dayEntries.map(e => `<li>${esc(t.players.find(p => p.id === e.playerId)?.name || 'Removed player')}: ${e.points > 0 ? '+' : ''}${e.points}${e.note ? ` · ${esc(e.note)}` : ''}</li>`).join('')}</ul>` : '<div class="order-line-meta">No games recorded this day.</div>'}` : '<div class="order-line-meta">Highlighted days are within the tournament; bold days have recorded games.</div>';
+}
+function openTournament(id) {
+ const t = tournaments.find(item => item.id === id);
+ if (!t) return;
+ activeTournamentId = id;
+ tnSelectedDay = '';
+ const base = tnToday() >= t.startDate && tnToday() <= t.endDate ? tnToday() : t.startDate;
+ tnCalendar = {year:Number(base.slice(0, 4)), month:Number(base.slice(5, 7)) - 1};
+ tnEl('tn-points-date').value = tnToday();
+ renderTournaments();
+}
+function openTournamentForm(t) {
+ editingTournamentId = t ? t.id : null;
+ tnEl('tournament-form').reset();
+ tnEl('tournament-error').textContent = '';
+ tnEl('tournament-modal-title').textContent = t ? 'Edit tournament' : 'New tournament';
+ if (t) {
+  tnEl('tournament-name').value = t.name; tnEl('tournament-game').value = t.game; tnEl('tournament-start').value = t.startDate; tnEl('tournament-end').value = t.endDate;
+  tnEl('tournament-cost').value = t.entryCost; tnEl('tournament-prizes').value = t.prizes; tnEl('tournament-description').value = t.description;
+ } else { tnEl('tournament-start').value = tnToday(); tnEl('tournament-end').value = tnToday(); }
+ openModal('tournament-modal');
+}
+tnEl('add-tournament').addEventListener('click', () => openTournamentForm(null));
+tnEl('tournament-edit').addEventListener('click', () => { const t = tnCurrent(); if (t) openTournamentForm(t); });
+tnEl('tournament-back').addEventListener('click', () => { activeTournamentId = null; renderTournaments(); });
+tnEl('tournaments-body').addEventListener('click', event => { const button = event.target.closest('[data-tournament-id]'); if (button) openTournament(button.dataset.tournamentId); });
+tnEl('tournament-form').addEventListener('submit', event => {
+ event.preventDefault();
+ const data = {name:tnEl('tournament-name').value.trim(), game:tnEl('tournament-game').value, startDate:tnEl('tournament-start').value, endDate:tnEl('tournament-end').value, entryCost:Math.round(Number(tnEl('tournament-cost').value) * 100) / 100, prizes:tnEl('tournament-prizes').value.trim(), description:tnEl('tournament-description').value.trim()};
+ const error = tnEl('tournament-error');
+ if (!data.name || !data.startDate || !data.endDate || !Number.isFinite(data.entryCost) || data.entryCost < 0) { error.textContent = 'Enter a name, dates and a valid entry cost.'; return; }
+ if (data.endDate < data.startDate) { error.textContent = 'The finish date cannot be before the start date.'; return; }
+ const existing = editingTournamentId ? tournaments.find(t => t.id === editingTournamentId) : null;
+ const snapshot = existing ? {...existing} : null;
+ if (existing) Object.assign(existing, data);
+ else tournaments.push({id:tnId('T'), ...data, createdAt:new Date().toISOString(), createdBy:activeAccount?.username || 'Unknown', players:[], entries:[]});
+ if (!persistTournaments()) { if (existing) Object.assign(existing, snapshot); else tournaments.pop(); return; }
+ recordActivity(existing ? 'tournament_updated' : 'tournament_created', data.name, `${data.game}, ${data.startDate} to ${data.endDate}, entry ${money(data.entryCost)}.`);
+ closeModal(tnEl('tournament-modal'));
+ if (!existing) openTournament(tournaments[tournaments.length - 1].id); else renderTournaments();
+ toast('Tournament saved');
+});
+tnEl('tournament-delete').addEventListener('click', () => {
+ const t = tnCurrent();
+ if (!t || !confirm(`Delete "${t.name}" with its players and history? This cannot be undone.`)) return;
+ tournaments = tournaments.filter(item => item.id !== t.id);
+ persistTournaments();
+ recordActivity('tournament_deleted', t.name, `${t.players.length} players and ${t.entries.length} entries removed.`);
+ activeTournamentId = null;
+ renderTournaments();
+});
+tnEl('tn-player-form').addEventListener('submit', event => {
+ event.preventDefault();
+ const t = tnCurrent(); const name = tnEl('tn-player-name').value.trim();
+ if (!t || !name) return;
+ if (t.players.some(p => p.name.toLowerCase() === name.toLowerCase())) { toast('That player is already in this tournament.'); return; }
+ t.players.push({id:tnId('P'), name, paid:tnEl('tn-player-paid').checked});
+ if (!persistTournaments()) { t.players.pop(); return; }
+ recordActivity('tournament_player_added', t.name, name);
+ event.target.reset();
+ renderTournamentDetail(t);
+});
+tnEl('tn-leaderboard').addEventListener('change', event => {
+ const box = event.target.closest('[data-tn-paid]'); const t = tnCurrent();
+ const player = t?.players.find(p => p.id === box?.dataset.tnPaid);
+ if (!player) return;
+ player.paid = box.checked; persistTournaments(); renderTournamentDetail(t);
+});
+tnEl('tn-leaderboard').addEventListener('click', event => {
+ const button = event.target.closest('[data-tn-remove-player]'); const t = tnCurrent();
+ const player = t?.players.find(p => p.id === button?.dataset.tnRemovePlayer);
+ if (!player || !confirm(`Remove ${player.name} and their recorded points?`)) return;
+ t.players = t.players.filter(p => p.id !== player.id);
+ t.entries = t.entries.filter(e => e.playerId !== player.id);
+ persistTournaments(); recordActivity('tournament_player_removed', t.name, player.name); renderTournamentDetail(t);
+});
+tnEl('tn-points-form').addEventListener('submit', event => {
+ event.preventDefault();
+ const t = tnCurrent(); const error = tnEl('tn-points-error');
+ const playerId = tnEl('tn-points-player').value; const points = Number(tnEl('tn-points-value').value); const date = tnEl('tn-points-date').value;
+ if (!t || !playerId || !Number.isInteger(points) || points === 0 || !date) { error.textContent = 'Choose a player, a whole number of points (not 0) and a date.'; return; }
+ error.textContent = '';
+ t.entries.push({id:tnId('E'), playerId, points, date, note:tnEl('tn-points-note').value.trim(), createdAt:new Date().toISOString()});
+ if (!persistTournaments()) { t.entries.pop(); return; }
+ recordActivity('tournament_points_added', t.name, `${t.players.find(p => p.id === playerId).name}: ${points > 0 ? '+' : ''}${points} on ${date}.`);
+ tnEl('tn-points-value').value = ''; tnEl('tn-points-note').value = '';
+ renderTournamentDetail(t);
+});
+tnEl('tn-history').addEventListener('click', event => {
+ const button = event.target.closest('[data-tn-remove-entry]'); const t = tnCurrent();
+ const entry = t?.entries.find(e => e.id === button?.dataset.tnRemoveEntry);
+ if (!entry) return;
+ t.entries = t.entries.filter(e => e.id !== entry.id);
+ persistTournaments(); recordActivity('tournament_points_removed', t.name, `${entry.points} points on ${entry.date} deleted.`); renderTournamentDetail(t);
+});
+tnEl('tn-cal').addEventListener('click', event => { const day = event.target.closest('[data-tn-day]'); const t = tnCurrent(); if (!day || !t) return; tnSelectedDay = day.dataset.tnDay; tnEl('tn-points-date').value = tnSelectedDay; renderTournamentCalendar(t); });
+const tnShiftMonth = delta => { const t = tnCurrent(); if (!t) return; const d = new Date(tnCalendar.year, tnCalendar.month + delta, 1); tnCalendar = {year:d.getFullYear(), month:d.getMonth()}; renderTournamentCalendar(t); };
+tnEl('tn-cal-prev').addEventListener('click', () => tnShiftMonth(-1));
+tnEl('tn-cal-next').addEventListener('click', () => tnShiftMonth(1));
 </script>
 </body>
 </html>
